@@ -293,14 +293,17 @@ void create_process(CommandHolder holder) {
   // }
 
   if(pid_id!=0){
-    //parent
+
+    printf("%s\n", "parent");
     if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
       parent_run_command(holder.cmd);
     wait(pid_id);
   } else
   {
+      printf("%s\n", "child");
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
       child_run_command(holder.cmd);
+
     exit(0);
     //child
   }
