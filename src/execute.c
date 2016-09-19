@@ -334,7 +334,6 @@ void run_script(CommandHolder* holders) {
   int num_processes =0;
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    plumber.
     create_process(holders[i]);
     num_processes++;
   }
