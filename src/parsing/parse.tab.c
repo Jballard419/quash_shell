@@ -1427,7 +1427,7 @@ push_back_Cmds(&(yyvsp[-1].cmd_list), mk_command_holder(NULL, NULL, 0, mk_eoc())
   case 13:
 #line 149 "src/parsing/parse.y" /* yacc.c:1646  */
     {
-   (yyval.cmd) = mk_echo_command(as_array_CmdStrs(&(yyvsp[0].cmd_strs), NULL));
+  (yyval.cmd) = mk_echo_command(as_array_CmdStrs(&(yyvsp[0].cmd_strs), NULL));
 }
 #line 1433 "src/parsing/parse.tab.c" /* yacc.c:1646  */
     break;
@@ -1443,7 +1443,7 @@ push_back_Cmds(&(yyvsp[-1].cmd_list), mk_command_holder(NULL, NULL, 0, mk_eoc())
   case 15:
 #line 155 "src/parsing/parse.y" /* yacc.c:1646  */
     {
-  (yyval.cmd) = mk_cd_command(strdup(""));
+  (yyval.cmd) = mk_cd_command(memory_pool_strdup(lookup_env("HOME")));
 }
 #line 1449 "src/parsing/parse.tab.c" /* yacc.c:1646  */
     break;

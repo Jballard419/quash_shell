@@ -302,19 +302,15 @@ void create_process(CommandHolder holder) {
   if(pid_id!=0){
     printf("%s\n", "parent");
     parent_run_command(holder.cmd);
-
     //parent
+    wait(pid_id);
   } else
   {
     printf("%s\n", "child");
-
     child_run_command(holder.cmd);
     exit(0);
     //child
   }
-
-
-
   (void) p_in;  // Silence unused variable warning
   (void) p_out; // Silence unused variable warning
   (void) r_in;  // Silence unused variable warning
