@@ -1,0 +1,11 @@
+# Start a delayed print statement
+delayed_echo hello 1 &
+
+# Print as a background job
+echo world &
+
+# Wait for background jobs to complete
+sleep 2
+
+# Print the contents of the current directory
+ls
