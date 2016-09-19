@@ -287,6 +287,21 @@ void create_process(CommandHolder holder) {
   bool r_in  = holder.flags & REDIRECT_IN;
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
+  if(p_out){
+    int pipenum[2];
+    pipe(pipenum);//TODO build struc for pipe
+    dup2(pipenum[0],1);
+  \
+    close(pipenum[0]);
+  }
+  if(p_in)
+  {
+
+
+
+
+  }
+
 
   int pid_id=fork();
   // if(!r_in){
