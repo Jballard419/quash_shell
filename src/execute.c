@@ -13,6 +13,9 @@
 #include "deque.h"
 #include "quash.h"
 
+IMPLEMENT_DEQUE_STRUCT(plumber, int*);
+IMPLEMENT_DEQUE(plumber, int*);
+
 // Remove this and all expansion calls to it
 /**
  * @brief Note calls to any function that requires implementation
@@ -273,7 +276,7 @@ void child_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder) {
+void create_process(CommandHolder holder, plumber* p) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
@@ -332,9 +335,11 @@ void run_script(CommandHolder* holders) {
 
   CommandType type;
   int num_processes =0;
+
+  plumber* p;
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    create_process(holders[i]);
+    create_process(holders[i], p);
     num_processes++;
   }
 
