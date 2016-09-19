@@ -214,7 +214,7 @@ void parent_run_command(Command cmd) {
     break;
 
   case PWD:
-    exit(0);
+    //exit(0);
     break;
 
   case JOBS:
@@ -300,12 +300,13 @@ void create_process(CommandHolder holder) {
   // }
 
   if(pid_id!=0){
+    printf("%s\n", "parent");
     parent_run_command(holder.cmd);
-    exit(0);
+
     //parent
   } else
   {
-    printf("%s\n", "hi");
+    printf("%s\n", "child");
 
     child_run_command(holder.cmd);
     exit(0);
