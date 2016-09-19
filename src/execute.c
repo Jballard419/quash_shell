@@ -44,8 +44,7 @@ const char* lookup_env(const char* env_var) {
   // HINT: This should be pretty simple
 
 
-  // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
+
 
   return getenv(env_var);
 }
@@ -163,10 +162,10 @@ void run_kill(KillCommand cmd) {
 void run_pwd() {
   // TODO: Print the current working directory
   IMPLEMENT_ME();
-
-  printf(get_current_dir_name());
+printf("%s\n",get_current_dir_name());
   // Flush the buffer before returning
   fflush(stdout);
+  return;
 }
 
 // Prints all background jobs currently in the job list to stdout
@@ -190,7 +189,7 @@ void run_jobs() {
  *
  * @sa Command
  */
-void example_run_command(Command cmd) {
+void parent_run_command(Command cmd) {
   CommandType type = get_command_type(cmd);
 
   switch (type) {
@@ -215,6 +214,46 @@ void example_run_command(Command cmd) {
     break;
 
   case PWD:
+    exit(0);
+    break;
+
+  case JOBS:
+    run_jobs();
+    break;
+
+  case EXIT:
+  case EOC:
+    break;
+
+  default:
+    fprintf(stderr, "Unknown command type: %d\n", type);
+  }
+}
+void child_run_command(Command cmd) {
+  CommandType type = get_command_type(cmd);
+
+  switch (type) {
+  case GENERIC:
+    run_generic(cmd.generic);
+    break;
+
+  case ECHO:
+    run_echo(cmd.echo);
+    break;
+
+  case EXPORT:
+    run_export(cmd.export);
+    break;
+
+  case CD:
+    exit(0);
+    break;
+
+  case KILL:
+    run_kill(cmd.kill);
+    break;
+
+  case PWD:
     run_pwd();
     break;
 
@@ -230,7 +269,6 @@ void example_run_command(Command cmd) {
     fprintf(stderr, "Unknown command type: %d\n", type);
   }
 }
-
 /**
  * @brief Create a process centered around the @a Command in the @a
  * CommandHolder setting up redirects and pipes where needed
@@ -250,8 +288,32 @@ void create_process(CommandHolder holder) {
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
 
-  fork();
-  // TODO: Remove warning silencers
+  int pid_id=fork();
+  // if(!r_in){
+  //   close(0);
+  // }
+  // if(!r_out){
+  //   close(1);
+  // }
+  // if (p_in& p_out) {
+  //   //
+  // }
+
+  if(pid_id!=0){
+    parent_run_command(holder.cmd);
+    exit(0);
+    //parent
+  } else
+  {
+    printf("%s\n", "hi");
+
+    child_run_command(holder.cmd);
+    exit(0);
+    //child
+  }
+
+
+
   (void) p_in;  // Silence unused variable warning
   (void) p_out; // Silence unused variable warning
   (void) r_in;  // Silence unused variable warning
@@ -259,15 +321,7 @@ void create_process(CommandHolder holder) {
   (void) r_app; // Silence unused variable warning
 
   // TODO: Setup pipes and redirects
-  if(!r_in){
-    close(0);
-  }
-  if(!r_out){
-    close(1);
-  }
-  if (p_in& p_out) {
-    //
-  }
+
 
 
   IMPLEMENT_ME();
