@@ -10,8 +10,11 @@
 #include "execute.h"
 
 #include <stdio.h>
-
+#include "deque.h"
 #include "quash.h"
+
+IMPLEMENT_DEQUE_STRUCT(plumber, int*);
+IMPLEMENT_DEQUE(plumber, int*);
 
 // Remove this and all expansion calls to it
 /**
@@ -42,9 +45,6 @@ const char* lookup_env(const char* env_var) {
   // to interpret variables from the command line and display the prompt
   // correctly
   // HINT: This should be pretty simple
-
-
-
 
   return getenv(env_var);
 }
@@ -114,10 +114,10 @@ void run_echo(EchoCommand cmd) {
   char** str = cmd.args;
 
   // TODO: Remove warning silencers
-  (void) str; // Silence unused variable warning
-
+  //(void) str; // Silence unused variable warning
+  printf("%s\n", *(str));
   // TODO: Implement echo
-  IMPLEMENT_ME();
+  //IMPLEMENT_ME();
 }
 
 // Sets an environment variable
@@ -197,16 +197,12 @@ void parent_run_command(Command cmd) {
     run_generic(cmd.generic);
     break;
 
-  case ECHO:
-    run_echo(cmd.echo);
-    break;
-
   case EXPORT:
     run_export(cmd.export);
     break;
 
   case CD:
-    run_cd(cmd.cd);
+    //run_cd(cmd.cd);
     break;
 
   case KILL:
@@ -214,7 +210,7 @@ void parent_run_command(Command cmd) {
     break;
 
   case PWD:
-    //exit(0);
+    printf("parent running pwd");
     break;
 
   case JOBS:
@@ -237,16 +233,12 @@ void child_run_command(Command cmd) {
     run_generic(cmd.generic);
     break;
 
-  case ECHO:
-    run_echo(cmd.echo);
-    break;
-
   case EXPORT:
     run_export(cmd.export);
     break;
 
   case CD:
-    exit(0);
+    //exit(0);
     break;
 
   case KILL:
@@ -259,6 +251,10 @@ void child_run_command(Command cmd) {
 
   case JOBS:
     run_jobs();
+    break;
+
+  case ECHO:
+    run_echo(cmd.echo);
     break;
 
   case EXIT:
@@ -280,7 +276,7 @@ void child_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder) {
+void create_process(CommandHolder holder, plumber* p) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
@@ -315,14 +311,17 @@ void create_process(CommandHolder holder) {
   // }
 
   if(pid_id!=0){
+
     printf("%s\n", "parent");
-    parent_run_command(holder.cmd);
-    //parent
+    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
+      parent_run_command(holder.cmd);
     wait(pid_id);
   } else
   {
-    printf("%s\n", "child");
-    child_run_command(holder.cmd);
+      printf("%s\n", "child");
+    if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
+      child_run_command(holder.cmd);
+
     exit(0);
     //child
   }
@@ -333,10 +332,7 @@ void create_process(CommandHolder holder) {
   (void) r_app; // Silence unused variable warning
 
   // TODO: Setup pipes and redirects
-
-
-
-  IMPLEMENT_ME();
+  //IMPLEMENT_ME();
 }
 
 // Run a list of commands
@@ -353,10 +349,15 @@ void run_script(CommandHolder* holders) {
   }
 
   CommandType type;
+  int num_processes =0;
 
+  plumber* p;
   // Run all commands in the `holder` array
-  for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i)
-    create_process(holders[i]);
+  for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
+    create_process(holders[i], p);
+    num_processes++;
+  }
+
 
   if (!(holders[0].flags & BACKGROUND)) {
     // Not a background Job
