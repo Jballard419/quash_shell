@@ -13,6 +13,10 @@
 #include "deque.h"
 #include "quash.h"
 
+
+static char* cwd;
+static char* env_val;
+
 IMPLEMENT_DEQUE_STRUCT(plumber, int*);
 IMPLEMENT_DEQUE(plumber, int*);
 
@@ -31,7 +35,7 @@ IMPLEMENT_DEQUE(plumber, int*);
 char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
-
+  cwd = getcwd(NULL,1024);
 
   // Change this to true if necessary
   *should_free = false;
@@ -53,11 +57,7 @@ const char* lookup_env(const char* env_var) {
 void write_env(const char* env_var, const char* val) {
   // TODO: Write environment variables
   // HINT: This should be pretty simple
-  IMPLEMENT_ME();
 
-  // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
-  (void) val;     // Silence unused variable warning
   setenv(env_var,val,1);
   }
 
@@ -116,8 +116,7 @@ void run_echo(EchoCommand cmd) {
   // TODO: Remove warning silencers
   //(void) str; // Silence unused variable warning
   printf("%s\n", *(str));
-  // TODO: Implement echo
-  //IMPLEMENT_ME();
+
 }
 
 // Sets an environment variable
@@ -137,11 +136,24 @@ void run_export(ExportCommand cmd) {
 
 // Changes the current working directory
 void run_cd(CDCommand cmd) {
-  // TODO: Change directory
+  if(cmd.dir == " "){
+    chdir(getenv("HOME"));
+    cwd = getcwd(NULL, 1024);
+  }
+  else{
+    char* oldDir = getcwd(NULL, 1024);
+    if(chdir(cmd.dir)==-1){
+      fprintf(stderr, "error");
+    }
+    else{
+      //changed
+      cwd = getcwd(NULL, 1024);
+      write_env("PWD", cwd);
+      write_env("OLD_PWD",  oldDir);
+    }
+  }
   // TODO: Update PWD and optionally update OLD_PWD
-  IMPLEMENT_ME();
-
-  (void) cmd; // Silence unused variable warning
+  //IMPLEMENT_ME();
 }
 
 // Sends a signal to all processes contained in a job
@@ -202,15 +214,11 @@ void parent_run_command(Command cmd) {
     break;
 
   case CD:
-    //run_cd(cmd.cd);
+    run_cd(cmd.cd);
     break;
 
   case KILL:
     run_kill(cmd.kill);
-    break;
-
-  case PWD:
-    printf("parent running pwd");
     break;
 
   case JOBS:
@@ -297,13 +305,13 @@ void create_process(CommandHolder holder, plumber* p) {
 
   if(pid_id!=0){
 
-    printf("%s\n", "parent");
+    //printf("%s\n", "parent");
     if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
       parent_run_command(holder.cmd);
     wait(pid_id);
   } else
   {
-      printf("%s\n", "child");
+      //printf("%s\n", "child");
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
       child_run_command(holder.cmd);
 
@@ -336,7 +344,9 @@ void run_script(CommandHolder* holders) {
   CommandType type;
   int num_processes =0;
 
-  plumber* p;
+  struct plumber myPlumber;
+  struct plumber* p;
+  p = &myPlumber;
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
     create_process(holders[i], p);
