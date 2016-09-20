@@ -14,7 +14,7 @@
 #include "quash.h"
 
 
-static char* cwd;
+
 static char* env_val;
 
 IMPLEMENT_DEQUE_STRUCT(plumber, int*);
@@ -35,10 +35,10 @@ IMPLEMENT_DEQUE(plumber, int*);
 char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
-  cwd = getcwd(NULL,1024);
+//  cwd = getcwd(NULL,1024);
 
   // Change this to true if necessary
-  *should_free = false;
+  *should_free = true;
 
   return  get_current_dir_name();
 }
@@ -110,7 +110,20 @@ void run_echo(EchoCommand cmd) {
 
   // TODO: Remove warning silencers
   //(void) str; // Silence unused variable warning
-  printf("%s\n", *(str));
+  int i= 0;
+  while (str[i]!=NULL) {
+    /* code */
+
+
+  printf("%s ", str[i]);
+  i=i+1;
+
+}
+  printf("\n", "");
+  //free(str);
+//  free(str);
+
+  return;
 }
 
 // Sets an environment variable
@@ -119,6 +132,8 @@ void run_export(ExportCommand cmd) {
   const char* env_var = cmd.env_var;
   const char* val = cmd.val;
   write_env(env_var, val);
+
+
   //TODO:: shit aint working
 }
 
@@ -126,7 +141,7 @@ void run_export(ExportCommand cmd) {
 void run_cd(CDCommand cmd) {
   if(cmd.dir == " "){
     chdir(getenv("HOME"));
-    cwd = getcwd(NULL, 1024);
+
   }
   else{
     char* oldDir = getcwd(NULL, 1024);
@@ -135,9 +150,11 @@ void run_cd(CDCommand cmd) {
     }
     else{
       //changed
-      cwd = getcwd(NULL, 1024);
-      write_env("PWD", cwd);
+
+      write_env("PWD", cmd.dir);
       write_env("OLD_PWD",  oldDir);
+      free(oldDir);
+    //  delete(oldDir);
     }
   }
 }
@@ -159,8 +176,10 @@ void run_kill(KillCommand cmd) {
 // Prints the current working directory to stdout
 void run_pwd() {
   // TODO: Print the current working directory
-  IMPLEMENT_ME();
-printf("%s\n",get_current_dir_name());
+  //IMPLEMENT_ME();
+  char *buf = get_current_dir_name() ;
+printf("%s\n",buf);
+  free(buf);
   // Flush the buffer before returning
   fflush(stdout);
   return;
@@ -228,7 +247,7 @@ void child_run_command(Command cmd) {
     break;
 
   case EXPORT:
-    run_export(cmd.export);
+    exit(0);
     break;
 
   case CD:
@@ -281,7 +300,7 @@ void create_process(CommandHolder holder, plumber* p) {
     int pipenum[2];
     pipe(pipenum);//TODO build struc for pipe
     dup2(pipenum[0],1);
-  \
+
     close(pipenum[0]);
   }
   if(p_in)
