@@ -99,12 +99,7 @@ void run_generic(GenericCommand cmd) {
   // character pointer is always NULL) list of strings. The first element in the
   // array is the executable
   char** str = cmd.args;
-
-  // TODO: Remove warning silencers
-  (void) str; // Silence unused variable warning
-
-  // TODO: Implement run generic
-  IMPLEMENT_ME();
+  execvp(str[0], str);
 }
 
 // Print strings
@@ -116,7 +111,6 @@ void run_echo(EchoCommand cmd) {
   // TODO: Remove warning silencers
   //(void) str; // Silence unused variable warning
   printf("%s\n", *(str));
-
 }
 
 // Sets an environment variable
@@ -124,14 +118,8 @@ void run_export(ExportCommand cmd) {
   // Write an environment variable
   const char* env_var = cmd.env_var;
   const char* val = cmd.val;
-
-  // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
-  (void) val;     // Silence unused variable warning
-
-  // TODO: Implement export.
-  // HINT: This should be quite simple.
-  IMPLEMENT_ME();
+  write_env(env_var, val);
+  //TODO:: shit aint working
 }
 
 // Changes the current working directory
@@ -152,8 +140,6 @@ void run_cd(CDCommand cmd) {
       write_env("OLD_PWD",  oldDir);
     }
   }
-  // TODO: Update PWD and optionally update OLD_PWD
-  //IMPLEMENT_ME();
 }
 
 // Sends a signal to all processes contained in a job
