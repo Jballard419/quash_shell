@@ -14,11 +14,31 @@
 #include "quash.h"
 
 
-
 static char* env_val;
-
+//pipe deque
 IMPLEMENT_DEQUE_STRUCT(plumber, int*);
 IMPLEMENT_DEQUE(plumber, int*);
+//jobs deque
+IMPLEMENT_DEQUE_STRUCT(jobs, struct Job);
+IMPLEMENT_DEQUE(jobs, struct Job);
+//pid deque
+IMPLEMENT_DEQUE_STRUCT(pidQueue, int);
+IMPLEMENT_DEQUE(pidQueue, int);
+
+struct Job{
+  int job_id;
+  Command cmd;
+  //bg is for background
+  bool bg;
+  bool done;
+  struct pidQueue pid_Queue;
+  struct plumber pipe_queue;
+};
+
+struct State{
+  struct Job currJob;
+  struct JobQueue;
+};
 
 // Remove this and all expansion calls to it
 /**
@@ -35,8 +55,7 @@ IMPLEMENT_DEQUE(plumber, int*);
 char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
-//  cwd = getcwd(NULL,1024);
-
+  // cwd = getcwd(NULL,1024);
   // Change this to true if necessary
   *should_free = true;
 
@@ -107,22 +126,13 @@ void run_echo(EchoCommand cmd) {
   // Print an array of strings. The args array is a NULL terminated (last
   // character pointer is always NULL) list of strings.
   char** str = cmd.args;
-
-  // TODO: Remove warning silencers
-  //(void) str; // Silence unused variable warning
   int i= 0;
   while (str[i]!=NULL) {
-    /* code */
-
-
-  printf("%s ", str[i]);
-  i=i+1;
-
-}
+    printf("%s ", str[i]);
+    i=i+1;
+  }
   printf("\n", "");
   //free(str);
-//  free(str);
-
   return;
 }
 
@@ -132,9 +142,6 @@ void run_export(ExportCommand cmd) {
   const char* env_var = cmd.env_var;
   const char* val = cmd.val;
   write_env(env_var, val);
-
-
-  //TODO:: shit aint working
 }
 
 // Changes the current working directory
