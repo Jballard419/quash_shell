@@ -296,32 +296,55 @@ void create_process(CommandHolder holder, plumber* p) {
   bool r_in  = holder.flags & REDIRECT_IN;
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
-  if(p_out){
-    int pipenum[2];
-    pipe(pipenum);//TODO build struc for pipe
-    dup2(pipenum[0],1);
-
-    close(pipenum[0]);
+  if(!p_in){ //0X
+	  //clearer plumber close all FD reset
+	  //peak at bottom
+	int ogpipe[2];
+	dup2(ogpipe[1],1);
+	dup2(ogpipe[0],0);
+	  while(!isempty()) //plumber is not empty
+	  {
+		  //pop top
+		  int oldpipe[2];
+		  close(oldpipe[1]);
+		  close(oldpipe[0]);
+	  }
+	  if(p_out){ //01
+			//add pipe, add copy of 
+				int pipeholder[2];
+				pipeholder[0]=dup(0);
+				pipeholder[1]=dup(1);
+				//add place holder to queue 
+				int newPipe[2];
+				pipe(newPipe);
+				dup2(newPipe[1],1);
+				
+				}
+	  
   }
-  if(p_in)
-  {
-
-
-
-
+  else if(p_out){ //11
+    int pipenum[2];
+    pipe(pipenum);//TODO build plumber
+    dup2(pipenum[1],1);
+	
+    close(pipenum[0]);
+	//peak top pipe
+	int oldpipe[2];
+	dup2(oldpipe[0],0);
+	
+  }
+  else{ //10
+	  //peak top
+	int oldpipe[2];
+	dup2(oldpipe[0],0);
+	  //peak bottom
+	int ogpipe[2];
+	dup2(ogpipe[1],1);
   }
 
 
   int pid_id=fork();
-  // if(!r_in){
-  //   close(0);
-  // }
-  // if(!r_out){
-  //   close(1);
-  // }
-  // if (p_in& p_out) {
-  //   //
-  // }
+ 
 
   if(pid_id!=0){
 
