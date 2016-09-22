@@ -16,8 +16,7 @@
 
 static char* env_val;
 //pipe deque
-IMPLEMENT_DEQUE_STRUCT(plumber, int*);
-IMPLEMENT_DEQUE(plumber, int*);
+static int pipes[2][2];
 //jobs deque
 IMPLEMENT_DEQUE_STRUCT(jobs, struct Job);
 IMPLEMENT_DEQUE(jobs, struct Job);
@@ -32,7 +31,7 @@ struct Job{
   bool bg;
   bool done;
   struct pidQueue pid_Queue;
-  struct plumber pipe_queue;
+
 };
 
 struct State{
@@ -296,63 +295,22 @@ void child_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder, plumber* p) {
+void create_process(CommandHolder holder, int p_num) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
   bool r_in  = holder.flags & REDIRECT_IN;
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
-  if(!p_in){ //0X
-	  //clearer plumber close all FD reset
-	  //peak at bottom
-	int ogpipe[2];
-	dup2(ogpipe[1],1);
-	dup2(ogpipe[0],0);
-	  while(!isempty()) //plumber is not empty
-	  {
-		  //pop top
-		  int oldpipe[2];
-		  close(oldpipe[1]);
-		  close(oldpipe[0]);
-	  }
-	  if(p_out){ //01
-			//add pipe, add copy of 
-				int pipeholder[2];
-				pipeholder[0]=dup(0);
-				pipeholder[1]=dup(1);
-				//add place holder to queue 
-				int newPipe[2];
-				pipe(newPipe);
-				dup2(newPipe[1],1);
-				
-				}
-	  
-  }
-  else if(p_out){ //11
-    int pipenum[2];
-    pipe(pipenum);//TODO build plumber
-    dup2(pipenum[1],1);
-	
-    close(pipenum[0]);
-	//peak top pipe
-	int oldpipe[2];
-	dup2(oldpipe[0],0);
-	
-  }
-  else{ //10
-	  //peak top
-	int oldpipe[2];
-	dup2(oldpipe[0],0);
-	  //peak bottom
-	int ogpipe[2];
-	dup2(ogpipe[1],1);
-  }
 
+  int a= i%2
+  j= a? 0:1;
+  int pipe_old[2]=pipes[a];
+  int pipe_new[2]=pipes[j];
 
+  pipe(pipe_old);
+  pipe(pipe_new);
   int pid_id=fork();
- 
-
   if(pid_id!=0){
 
     //printf("%s\n", "parent");
@@ -362,12 +320,30 @@ void create_process(CommandHolder holder, plumber* p) {
   } else
   {
       //printf("%s\n", "child");
+
+  if (p_in){
+    dup2(pipe_old[0],0);
+
+
+  }
+  if(p_out){
+    dup2(pipe_new[1],1);
+  }
+  close(pipe_old[1]);
+  close(pipe_old[0]);
+  close(pipe_new[1]);
+  close(pipe_new[0]);
+
+
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
       child_run_command(holder.cmd);
 
     exit(0);
     //child
   }
+  /
+
+
   (void) p_in;  // Silence unused variable warning
   (void) p_out; // Silence unused variable warning
   (void) r_in;  // Silence unused variable warning
@@ -399,7 +375,7 @@ void run_script(CommandHolder* holders) {
   p = &myPlumber;
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    create_process(holders[i], p);
+    create_process(holders[i], i);
     num_processes++;
   }
 
