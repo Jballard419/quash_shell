@@ -308,10 +308,13 @@ void create_process(CommandHolder holder, int p_num) {
   int a= p_num%2;
   int j= a? 0:1;
 
-  printf("J= %d  \n", j );
+  //printf("J= %d  \n", j );
   int* pipe_old=plumber_pipes[a];
   int* pipe_new=plumber_pipes[j];
+  if(p_out){
 
+    pipe(pipe_new);
+  }
 
   int pid_id=fork();
   if(pid_id!=0){
@@ -320,6 +323,19 @@ void create_process(CommandHolder holder, int p_num) {
     if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
       parent_run_command(holder.cmd);
     wait(pid_id);
+
+
+    if( p_out){
+
+      close(pipe_new[0]);
+    } if (p_in){
+      close(pipe_old[1]);
+
+    }
+
+
+
+    
   } else
   {
       //printf("%s\n", "child");
@@ -332,6 +348,7 @@ void create_process(CommandHolder holder, int p_num) {
     // char  buf[1024];
     // read(pipe_old[0], buf, 10);
     // printf("%s\n", buf );
+
     printf("%s\n","piping in " );
     dup2(pipe_old[0],0);
 
@@ -342,21 +359,21 @@ void create_process(CommandHolder holder, int p_num) {
   close(pipe_old[0]);
   close(pipe_new[1]);
   close(pipe_new[0]);
-  //free(pipe_new);
-  //free(pipe_old);
+
 
 
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
       child_run_command(holder.cmd);
-
+    //free(*pipe_new);
+    //free(*pipe_old);
     exit(0);
     //child
   }
 
 
 
-  (void) p_in;  // Silence unused variable warning
-  (void) p_out; // Silence unused variable warning
+  //free(*pipe_new);
+  //free(*pipe_old);
   (void) r_in;  // Silence unused variable warning
   (void) r_out; // Silence unused variable warning
   (void) r_app; // Silence unused variable warning
@@ -383,16 +400,12 @@ void run_script(CommandHolder* holders) {
 
 
   // Run all commands in the `holder` array
-  pipe(plumber_pipes[1]);
-  pipe(plumber_pipes[0]);
+
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
     create_process(holders[i], i);
     num_processes++;
   }
-  close(plumber_pipes[0][0]);
-  close(plumber_pipes[0][1]);
-  close(plumber_pipes[1][0]);
-  close(plumber_pipes[1][1]);
+
   if (!(holders[0].flags & BACKGROUND)) {
     // Not a background Job
     // TODO: Wait for all processes under the job to complete
