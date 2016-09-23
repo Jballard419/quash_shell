@@ -16,35 +16,31 @@
 
 static char* env_val;
 //pipe deque
- int plumber_pipes[2][2];
- //pid deque
- IMPLEMENT_DEQUE_STRUCT(PidQueue, int);
- IMPLEMENT_DEQUE(PidQueue, int);
+IMPLEMENT_DEQUE_STRUCT(plumber, int*);
+IMPLEMENT_DEQUE(plumber, int*);
+//jobs deque
+IMPLEMENT_DEQUE_STRUCT(jobs, struct Job);
+IMPLEMENT_DEQUE(jobs, struct Job);
+//pid deque
+IMPLEMENT_DEQUE_STRUCT(pidQueue, int);
+IMPLEMENT_DEQUE(pidQueue, int);
 
- //pipe deque
- IMPLEMENT_DEQUE_STRUCT(plumber, int*);
- IMPLEMENT_DEQUE(plumber, int*);
+struct Job{
+  int job_id;
+  Command cmd;
+  //bg is for background
+  bool bg;
+  bool done;
+  struct pidQueue pid_Queue;
+  struct plumber pipe_queue;
+};
 
- struct Job{
-   int job_id;
-   Command cmd;
-   //bg is for background
-   bool bg;
-   bool done;
-   struct PidQueue pid_Queue;
-   struct plumber pipe_queue;
- };
+struct State{
+  struct Job currJob;
+  struct JobQueue;
+};
 
- //jobs deque
- IMPLEMENT_DEQUE_STRUCT(JobQueue, struct Job);
- IMPLEMENT_DEQUE(JobQueue, struct Job);
-
- struct State{
-   struct Job workingJob;
-   struct JobQueue job_queue;
- };
-
- struct State globalState;
+// Remove this and all expansion calls to it
 /**
  * @brief Note calls to any function that requires implementation
  */
@@ -135,7 +131,7 @@ void run_echo(EchoCommand cmd) {
     printf("%s ", str[i]);
     i=i+1;
   }
-  printf("\n");
+  printf("\n", "");
   //free(str);
   return;
 }
@@ -300,83 +296,57 @@ void child_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder, int p_num) {
+void create_process(CommandHolder holder, plumber* p) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
   bool r_in  = holder.flags & REDIRECT_IN;
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
-
-  int a= p_num%2;
-  int j= a? 0:1;
-
-  //printf("J= %d  \n", j );
-  int* pipe_old=plumber_pipes[a];
-  int* pipe_new=plumber_pipes[j];
   if(p_out){
+    int pipenum[2];
+    pipe(pipenum);//TODO build struc for pipe
+    dup2(pipenum[0],1);
 
-    pipe(pipe_new);
+    close(pipenum[0]);
+  }
+  if(p_in)
+  {
+
+
+
+
   }
 
+
   int pid_id=fork();
+  // if(!r_in){
+  //   close(0);
+  // }
+  // if(!r_out){
+  //   close(1);
+  // }
+  // if (p_in& p_out) {
+  //   //
+  // }
+
   if(pid_id!=0){
 
     //printf("%s\n", "parent");
     if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
       parent_run_command(holder.cmd);
     wait(pid_id);
-
-
-    if( p_out){
-
-      close(pipe_new[0]);
-    } if (p_in){
-      close(pipe_old[1]);
-
-    }
-
-
-
-    
   } else
   {
       //printf("%s\n", "child");
-      if(p_out){
-        printf("%s\n","piping out " );
-        dup2(pipe_new[1],1);
-
-      }
-  if (p_in){
-    // char  buf[1024];
-    // read(pipe_old[0], buf, 10);
-    // printf("%s\n", buf );
-
-    printf("%s\n","piping in " );
-    dup2(pipe_old[0],0);
-
-
-  }
-
-  close(pipe_old[1]);
-  close(pipe_old[0]);
-  close(pipe_new[1]);
-  close(pipe_new[0]);
-
-
-
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
       child_run_command(holder.cmd);
-    //free(*pipe_new);
-    //free(*pipe_old);
+
     exit(0);
     //child
   }
-
-
-
-  //free(*pipe_new);
-  //free(*pipe_old);
+  (void) p_in;  // Silence unused variable warning
+  (void) p_out; // Silence unused variable warning
   (void) r_in;  // Silence unused variable warning
   (void) r_out; // Silence unused variable warning
   (void) r_app; // Silence unused variable warning
@@ -401,13 +371,15 @@ void run_script(CommandHolder* holders) {
   CommandType type;
   int num_processes =0;
 
-
+  struct plumber myPlumber;
+  struct plumber* p;
+  p = &myPlumber;
   // Run all commands in the `holder` array
-
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    create_process(holders[i], i);
+    create_process(holders[i], p);
     num_processes++;
   }
+
 
   if (!(holders[0].flags & BACKGROUND)) {
     // Not a background Job
