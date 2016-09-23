@@ -15,15 +15,14 @@
 
 
 static char* env_val;
+
+//pid deque
+IMPLEMENT_DEQUE_STRUCT(PidQueue, int);
+IMPLEMENT_DEQUE(PidQueue, int);
+
 //pipe deque
 IMPLEMENT_DEQUE_STRUCT(plumber, int*);
 IMPLEMENT_DEQUE(plumber, int*);
-//jobs deque
-IMPLEMENT_DEQUE_STRUCT(jobs, struct Job);
-IMPLEMENT_DEQUE(jobs, struct Job);
-//pid deque
-IMPLEMENT_DEQUE_STRUCT(pidQueue, int);
-IMPLEMENT_DEQUE(pidQueue, int);
 
 struct Job{
   int job_id;
@@ -31,15 +30,20 @@ struct Job{
   //bg is for background
   bool bg;
   bool done;
-  struct pidQueue pid_Queue;
+  struct PidQueue pid_Queue;
   struct plumber pipe_queue;
 };
 
+//jobs deque
+IMPLEMENT_DEQUE_STRUCT(JobQueue, struct Job);
+IMPLEMENT_DEQUE(JobQueue, struct Job);
+
 struct State{
-  struct Job currJob;
-  struct JobQueue;
+  struct Job workingJob;
+  struct JobQueue job_queue;
 };
 
+struct State globalState;
 // Remove this and all expansion calls to it
 /**
  * @brief Note calls to any function that requires implementation
