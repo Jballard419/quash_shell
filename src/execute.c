@@ -16,28 +16,30 @@
 
 static char* env_val;
 //pipe deque
-static int pipes[2][2];
+ int plumber_pipes[2][2];
 //jobs deque
-IMPLEMENT_DEQUE_STRUCT(jobs, struct Job);
-IMPLEMENT_DEQUE(jobs, struct Job);
+
 //pid deque
 IMPLEMENT_DEQUE_STRUCT(pidQueue, int);
 IMPLEMENT_DEQUE(pidQueue, int);
 
-struct Job{
-  int job_id;
-  Command cmd;
-  //bg is for background
-  bool bg;
-  bool done;
-  struct pidQueue pid_Queue;
+// struct Job{
+//   int job_id;
+//   Command cmd;
+//   //bg is for background
+//   bool bg;
+//   bool done;
+//
+//
+// };
+//
+// IMPLEMENT_DEQUE_STRUCT(jobs,  Job);
+// IMPLEMENT_DEQUE(jobs,  Job);
 
-};
-
-struct State{
-  struct Job currJob;
-  struct JobQueue;
-};
+//struct State{
+//  struct Job currJob;
+//  struct JobQueue;
+//};
 
 // Remove this and all expansion calls to it
 /**
@@ -130,7 +132,7 @@ void run_echo(EchoCommand cmd) {
     printf("%s ", str[i]);
     i=i+1;
   }
-  printf("\n", "");
+  printf("\n");
   //free(str);
   return;
 }
@@ -303,13 +305,14 @@ void create_process(CommandHolder holder, int p_num) {
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
 
-  int a= i%2
-  j= a? 0:1;
-  int pipe_old[2]=pipes[a];
-  int pipe_new[2]=pipes[j];
+  int a= p_num%2;
+  int j= a? 0:1;
 
-  pipe(pipe_old);
-  pipe(pipe_new);
+  printf("J= %d  \n", j );
+  int* pipe_old=plumber_pipes[a];
+  int* pipe_new=plumber_pipes[j];
+
+
   int pid_id=fork();
   if(pid_id!=0){
 
@@ -320,19 +323,27 @@ void create_process(CommandHolder holder, int p_num) {
   } else
   {
       //printf("%s\n", "child");
+      if(p_out){
+        printf("%s\n","piping out " );
+        dup2(pipe_new[1],1);
 
+      }
   if (p_in){
+    // char  buf[1024];
+    // read(pipe_old[0], buf, 10);
+    // printf("%s\n", buf );
+    printf("%s\n","piping in " );
     dup2(pipe_old[0],0);
 
 
   }
-  if(p_out){
-    dup2(pipe_new[1],1);
-  }
+
   close(pipe_old[1]);
   close(pipe_old[0]);
   close(pipe_new[1]);
   close(pipe_new[0]);
+  //free(pipe_new);
+  //free(pipe_old);
 
 
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
@@ -341,7 +352,7 @@ void create_process(CommandHolder holder, int p_num) {
     exit(0);
     //child
   }
-  /
+
 
 
   (void) p_in;  // Silence unused variable warning
@@ -370,16 +381,18 @@ void run_script(CommandHolder* holders) {
   CommandType type;
   int num_processes =0;
 
-  struct plumber myPlumber;
-  struct plumber* p;
-  p = &myPlumber;
+
   // Run all commands in the `holder` array
+  pipe(plumber_pipes[1]);
+  pipe(plumber_pipes[0]);
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
     create_process(holders[i], i);
     num_processes++;
   }
-
-
+  close(plumber_pipes[0][0]);
+  close(plumber_pipes[0][1]);
+  close(plumber_pipes[1][0]);
+  close(plumber_pipes[1][1]);
   if (!(holders[0].flags & BACKGROUND)) {
     // Not a background Job
     // TODO: Wait for all processes under the job to complete
