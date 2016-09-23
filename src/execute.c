@@ -8,7 +8,7 @@
  */
 
 #include "execute.h"
-
+#include <fcntl.h>
 #include <stdio.h>
 #include "deque.h"
 #include "quash.h"
@@ -300,7 +300,7 @@ void child_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder, int p_num) {
+void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
@@ -308,90 +308,105 @@ void create_process(CommandHolder holder, int p_num) {
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
 
-  int a= p_num%2;
-  int j= a? 0:1;
+  int new_id= p_num%2;
+  int old_id= new_id? 0:1;
 
-  //printf("J= %d  \n", j );
-  int* pipe_old=plumber_pipes[a];
-  int* pipe_new=plumber_pipes[j];
-  if(p_out){
 
-    pipe(pipe_new);
-  }
+
+
+   if(p_out)
+  {
+    pipe(plumber_pipes[new_id]);
+
+   }
+
+
 
   int pid_id=fork();
   if(pid_id!=0){
 
     //printf("%s\n", "parent");
     if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
-      parent_run_command(holder.cmd);
-    wait(pid_id);
+    parent_run_command(holder.cmd);
 
 
-    if( p_out){
-
-      close(pipe_new[0]);
-    } if (p_in){
-      close(pipe_old[1]);
+     if (p_in){
+      close(plumber_pipes[old_id][1]);
 
     }
 
+    wait(pid_id);
 
 
-    
+
   } else
   {
-      //printf("%s\n", "child");
-      if(p_out){
-        printf("%s\n","piping out " );
-        dup2(pipe_new[1],1);
+      //child
+
+      if(r_in){
+
+
+        int file_name= open(holder.redirect_in , O_RDONLY| O_CREAT , S_IRWXU);
+        dup2(file_name,STDIN_FILENO );
 
       }
-  if (p_in){
-    // char  buf[1024];
-    // read(pipe_old[0], buf, 10);
-    // printf("%s\n", buf );
+      if(r_out){
+          int file_out= open(holder.redirect_out , O_WRONLY);
+          dup2(file_out,STDOUT_FILENO);
 
-    printf("%s\n","piping in " );
-    dup2(pipe_old[0],0);
+      }
+      if (p_in){
 
-
-  }
-
-  close(pipe_old[1]);
-  close(pipe_old[0]);
-  close(pipe_new[1]);
-  close(pipe_new[0]);
+      close(plumber_pipes[new_id][0]);
+        dup2(plumber_pipes[old_id][0],STDIN_FILENO);
 
 
+
+      }
+      if(p_out){
+
+        dup2(plumber_pipes[new_id][1],STDOUT_FILENO);
+        close(plumber_pipes[new_id][1]);
+
+
+
+
+      }
+
+  close(plumber_pipes[new_id][1]);
+  close(plumber_pipes[old_id][1]);
+  close(plumber_pipes[old_id][0]);
 
     if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
       child_run_command(holder.cmd);
-    //free(*pipe_new);
-    //free(*pipe_old);
+
     exit(0);
     //child
   }
 
 
 
-  //free(*pipe_new);
-  //free(*pipe_old);
+
   (void) r_in;  // Silence unused variable warning
   (void) r_out; // Silence unused variable warning
   (void) r_app; // Silence unused variable warning
 
-  // TODO: Setup pipes and redirects
-  //IMPLEMENT_ME();
+
+
 }
 
 // Run a list of commands
 void run_script(CommandHolder* holders) {
+
+  int plumber_pipes[2][2];
   if (holders == NULL)
     return;
 
   check_jobs_bg_status();
 
+
+  pipe(plumber_pipes[0]);
+  pipe(plumber_pipes[1]);
   if (get_command_holder_type(holders[0]) == EXIT &&
       get_command_holder_type(holders[1]) == EOC) {
     end_main_loop();
@@ -405,7 +420,7 @@ void run_script(CommandHolder* holders) {
   // Run all commands in the `holder` array
 
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    create_process(holders[i], i);
+    create_process(holders[i], i,  plumber_pipes);
     num_processes++;
   }
 
