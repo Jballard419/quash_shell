@@ -28,20 +28,22 @@ static char* env_val;
  struct Job{
    int job_id;
    Command cmd;
-   //bg is for background
    bool bg;
    bool done;
-   struct PidQueue pid_Queue;
-   struct plumber pipe_queue;
+   pid_t first_job;
+  //  struct PidQueue pid_Queue;
+  //  struct plumber pipe_queue;
  };
 
  //jobs deque
  IMPLEMENT_DEQUE_STRUCT(JobQueue, struct Job);
+ // PROTOTYPE_DEQUE(JobQueue, struct Job);
  IMPLEMENT_DEQUE(JobQueue, struct Job);
 
  struct State{
    struct Job workingJob;
    struct JobQueue job_queue;
+   int jobNum;
  };
 
  struct State globalState;
@@ -300,7 +302,7 @@ void child_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
+void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], struct Job* j) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
@@ -310,22 +312,26 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
 
   int new_id= p_num%2;
   int old_id= new_id? 0:1;
+
+  //TODO:: are there other cases to consider?
   if(p_out)
   {
     pipe(plumber_pipes[new_id]);
   }
 
   int pid_id=fork();
+  // if(!p_in){
+  //   j->first_job =  pid_id;
+  // }
   if(pid_id!=0){
+    //printf("%s\n", "parent");
+    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
+    parent_run_command(holder.cmd);
 
-  //printf("%s\n", "parent");
-  if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
-  parent_run_command(holder.cmd);
-
-  if (p_in){
-    close(plumber_pipes[old_id][1]);
-  }
-  wait(pid_id);
+    if (p_in){
+      close(plumber_pipes[old_id][1]);
+    }
+    wait(pid_id);
   }
   else
   {
@@ -337,7 +343,6 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
     if(r_out){
         int file_out= open(holder.redirect_out , O_WRONLY);
         dup2(file_out,STDOUT_FILENO);
-
     }
     if (p_in){
       close(plumber_pipes[new_id][0]);
@@ -357,16 +362,9 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
 
   exit(0);
   }
-
-
-
-
   (void) r_in;  // Silence unused variable warning
   (void) r_out; // Silence unused variable warning
   (void) r_app; // Silence unused variable warning
-
-
-
 }
 
 // Run a list of commands
@@ -377,7 +375,6 @@ void run_script(CommandHolder* holders) {
     return;
 
   check_jobs_bg_status();
-
 
   pipe(plumber_pipes[0]);
   pipe(plumber_pipes[1]);
@@ -391,13 +388,15 @@ void run_script(CommandHolder* holders) {
   int num_processes =0;
 
 
-  // Run all commands in the `holder` array
-
+  //create job here
+  struct Job* newJob;
+  //newJob = (struct Job*) malloc(sizeof(struct Job));
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    create_process(holders[i], i,  plumber_pipes);
+    create_process(holders[i], i,  plumber_pipes, newJob);
     num_processes++;
   }
 
+  push_back_JobQueue(&globalState.job_queue, *newJob);
   if (!(holders[0].flags & BACKGROUND)) {
     // Not a background Job
     // TODO: Wait for all processes under the job to complete
