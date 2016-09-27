@@ -348,14 +348,14 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
           // TODO find a better way to stop it from reading
         int file_name= open(holder.redirect_in , O_RDONLY);
         if(file_name<0){
-          printf("%s\n", "error file not found" );
+          
           exit(0);
         }
         dup2(file_name,STDIN_FILENO );
 
       }
       if(r_out && !r_app){
-        =
+
           int file_out= open(holder.redirect_out , O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU |S_IRWXG | S_IRWXO );
           dup2(file_out,STDOUT_FILENO);
 
