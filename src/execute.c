@@ -21,8 +21,9 @@ static char* env_val;
  IMPLEMENT_DEQUE_STRUCT(PidQueue, int);
  IMPLEMENT_DEQUE(PidQueue, int);
 
-
-
+ //pipe deque
+ IMPLEMENT_DEQUE_STRUCT(plumber, int*);
+ IMPLEMENT_DEQUE(plumber, int*);
 
  struct Job{
    int job_id;
@@ -31,7 +32,7 @@ static char* env_val;
    bool bg;
    bool done;
    struct PidQueue pid_Queue;
-
+   struct plumber pipe_queue;
  };
 
  //jobs deque
@@ -309,88 +310,52 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
 
   int new_id= p_num%2;
   int old_id= new_id? 0:1;
-
-
-
-
-   if(p_out)
+  if(p_out)
   {
     pipe(plumber_pipes[new_id]);
-
-   }
-
-
+  }
 
   int pid_id=fork();
   if(pid_id!=0){
 
-    //printf("%s\n", "parent");
-    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
-    parent_run_command(holder.cmd);
+  //printf("%s\n", "parent");
+  if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
+  parent_run_command(holder.cmd);
 
-
-     if (p_in){
-      close(plumber_pipes[old_id][1]);
-
-    }
-
-    wait(pid_id);
-
-
-
-  } else
+  if (p_in){
+    close(plumber_pipes[old_id][1]);
+  }
+  wait(pid_id);
+  }
+  else
   {
-      //child
+    //child
+  if(r_in){
+    int file_name= open(holder.redirect_in , O_RDONLY| O_CREAT , S_IRWXU);
+    dup2(file_name,STDIN_FILENO );
+    }
+  if(r_out){
+      int file_out= open(holder.redirect_out , O_WRONLY);
+      dup2(file_out,STDOUT_FILENO);
 
-      if(r_in){
-
-          // TODO find a better way to stop it from reading
-        int file_name= open(holder.redirect_in , O_RDONLY);
-        if(file_name<0){
-
-          exit(0);
-        }
-        dup2(file_name,STDIN_FILENO );
-
-      }
-      if(r_out && !r_app){
-
-          int file_out= open(holder.redirect_out , O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU |S_IRWXG | S_IRWXO );
-          dup2(file_out,STDOUT_FILENO);
-
-      }else if(r_app){
-
-        int file_app= open(holder.redirect_out , O_WRONLY|O_APPEND| O_CREAT, S_IRWXU |S_IRWXG | S_IRWXO );
-        dup2(file_app,STDOUT_FILENO);
-
-      }
-      if (p_in){
-
-        close(plumber_pipes[new_id][0]);
-        dup2(plumber_pipes[old_id][0],STDIN_FILENO);
-
-
-
-      }
-      if(p_out){
-
-        dup2(plumber_pipes[new_id][1],STDOUT_FILENO);
-        close(plumber_pipes[new_id][1]);
-
-
-
-
-      }
+  }
+  if (p_in){
+    close(plumber_pipes[new_id][0]);
+    dup2(plumber_pipes[old_id][0],STDIN_FILENO);
+  }
+  if(p_out){
+    dup2(plumber_pipes[new_id][1],STDOUT_FILENO);
+    close(plumber_pipes[new_id][1]);
+  }
 
   close(plumber_pipes[new_id][1]);
   close(plumber_pipes[old_id][1]);
   close(plumber_pipes[old_id][0]);
 
-    if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
-      child_run_command(holder.cmd);
+  if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
+    child_run_command(holder.cmd);
 
-    exit(0);
-    //child
+  exit(0);
   }
 
 
