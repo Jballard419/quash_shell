@@ -329,23 +329,23 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
   }
   else
   {
-    //child
-  if(r_in){
-    int file_name= open(holder.redirect_in , O_RDONLY| O_CREAT , S_IRWXU);
-    dup2(file_name,STDIN_FILENO );
-    }
-  if(r_out){
-      int file_out= open(holder.redirect_out , O_WRONLY);
-      dup2(file_out,STDOUT_FILENO);
+      //child
+    if(r_in){
+      int file_name= open(holder.redirect_in , O_RDONLY| O_CREAT , S_IRWXU);
+      dup2(file_name,STDIN_FILENO );
+      }
+    if(r_out){
+        int file_out= open(holder.redirect_out , O_WRONLY);
+        dup2(file_out,STDOUT_FILENO);
 
-  }
-  if (p_in){
-    close(plumber_pipes[new_id][0]);
-    dup2(plumber_pipes[old_id][0],STDIN_FILENO);
-  }
-  if(p_out){
-    dup2(plumber_pipes[new_id][1],STDOUT_FILENO);
-    close(plumber_pipes[new_id][1]);
+    }
+    if (p_in){
+      close(plumber_pipes[new_id][0]);
+      dup2(plumber_pipes[old_id][0],STDIN_FILENO);
+    }
+    if(p_out){
+      dup2(plumber_pipes[new_id][1],STDOUT_FILENO);
+      close(plumber_pipes[new_id][1]);
   }
 
   close(plumber_pipes[new_id][1]);
