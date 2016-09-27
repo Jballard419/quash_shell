@@ -21,9 +21,8 @@ static char* env_val;
  IMPLEMENT_DEQUE_STRUCT(PidQueue, int);
  IMPLEMENT_DEQUE(PidQueue, int);
 
- //pipe deque
- IMPLEMENT_DEQUE_STRUCT(plumber, int*);
- IMPLEMENT_DEQUE(plumber, int*);
+
+
 
  struct Job{
    int job_id;
@@ -32,7 +31,7 @@ static char* env_val;
    bool bg;
    bool done;
    struct PidQueue pid_Queue;
-   struct plumber pipe_queue;
+
  };
 
  //jobs deque
@@ -348,7 +347,7 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2]) {
           // TODO find a better way to stop it from reading
         int file_name= open(holder.redirect_in , O_RDONLY);
         if(file_name<0){
-          
+
           exit(0);
         }
         dup2(file_name,STDIN_FILENO );
