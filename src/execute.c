@@ -16,37 +16,33 @@
 
 static char* env_val;
 //pipe deque
- int plumber_pipes[2][2];
- //pid deque
- IMPLEMENT_DEQUE_STRUCT(PidQueue, int);
- IMPLEMENT_DEQUE(PidQueue, int);
+int plumber_pipes[2][2];
 
- //pipe deque
- IMPLEMENT_DEQUE_STRUCT(plumber, int*);
- IMPLEMENT_DEQUE(plumber, int*);
+IMPLEMENT_DEQUE_STRUCT(pidQueue, int);
+IMPLEMENT_DEQUE(pidQueue, int);
 
- struct Job{
-   int job_id;
-   Command cmd;
-   bool bg;
-   bool done;
-   pid_t first_job;
-  //  struct PidQueue pid_Queue;
-  //  struct plumber pipe_queue;
- };
+typedef struct Job{
+ int job_id;
+ Command cmd;
+ bool bg;
+ bool done;
+ struct pidQueue pids;
+};
 
- //jobs deque
- IMPLEMENT_DEQUE_STRUCT(JobQueue, struct Job);
- // PROTOTYPE_DEQUE(JobQueue, struct Job);
- IMPLEMENT_DEQUE(JobQueue, struct Job);
+//jobs deque
+IMPLEMENT_DEQUE_STRUCT(JobQueue, struct Job);
+IMPLEMENT_DEQUE(JobQueue, struct Job);
 
- struct State{
-   struct Job workingJob;
-   struct JobQueue job_queue;
-   int jobNum;
- };
+struct State{
+ struct Job workingJob;
+ struct JobQueue job_queue;
+ int jobNum;
+ bool init;
+};
 
- struct State globalState;
+struct State globalState={
+init : false,
+};
 /**
  * @brief Note calls to any function that requires implementation
  */
@@ -291,6 +287,21 @@ void child_run_command(Command cmd) {
     fprintf(stderr, "Unknown command type: %d\n", type);
   }
 }
+
+void removeFromIDQueue(pidQueue *q, int p){
+  size_t x = length_pidQueue(q);
+  pid_t* temp;
+  for(int i = 0; i<x; i++){
+    temp = pop_front_pidQueue(q);
+    if(temp != p){
+      push_back_pidQueue(q, temp);
+    }
+    else{
+      i++;
+    }
+    // free(temp);
+  }
+}
 /**
  * @brief Create a process centered around the @a Command in the @a
  * CommandHolder setting up redirects and pipes where needed
@@ -313,16 +324,16 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   int new_id= p_num%2;
   int old_id= new_id? 0:1;
 
-  //TODO:: are there other cases to consider?
   if(p_out)
   {
     pipe(plumber_pipes[new_id]);
   }
 
   int pid_id=fork();
-  // if(!p_in){
-  //   j->first_job =  pid_id;
-  // }
+  //push this p_id to the pids queue
+  push_front_pidQueue(&j->pids, pid_id);
+  // printf("%d", peek_front_pidQueue(&j->pids));
+
   if(pid_id!=0){
     //printf("%s\n", "parent");
     if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
@@ -331,7 +342,8 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
     if (p_in){
       close(plumber_pipes[old_id][1]);
     }
-    wait(pid_id);
+    if(!(&j->bg))
+      wait(pid_id);
   }
   else
   {
@@ -365,10 +377,19 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   (void) r_in;  // Silence unused variable warning
   (void) r_out; // Silence unused variable warning
   (void) r_app; // Silence unused variable warning
+  removeFromIDQueue(&j->pids, pid_id);
+  if(is_empty_pidQueue(&j->pids)){
+    j->done = true;
+  }
 }
 
 // Run a list of commands
 void run_script(CommandHolder* holders) {
+
+  if(!globalState.init){
+    globalState.job_queue = new_JobQueue(10);
+    globalState.init = true;
+  }
 
   int plumber_pipes[2][2];
   if (holders == NULL)
@@ -385,31 +406,31 @@ void run_script(CommandHolder* holders) {
   }
 
   CommandType type;
-  int num_processes =0;
+  int num_processes = 0;
 
 
-  //create job here
-  struct Job* newJob;
-  //newJob = (struct Job*) malloc(sizeof(struct Job));
-  for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
-    create_process(holders[i], i,  plumber_pipes, newJob);
-    num_processes++;
-  }
-
-  push_back_JobQueue(&globalState.job_queue, *newJob);
   if (!(holders[0].flags & BACKGROUND)) {
-    // Not a background Job
-    // TODO: Wait for all processes under the job to complete
-    IMPLEMENT_ME();
-
-
+    //create job here
+    struct Job newJob={done: false, job_id : 0, bg : false};
+    newJob.pids = new_pidQueue(10);
+    //newJob.
+    for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
+      create_process(holders[i], i,  plumber_pipes, &newJob);
+      num_processes++;
+    }
   }
   else {
-    // A background job.
-    // TODO: Push the new job to the job queue
-    IMPLEMENT_ME();
 
-    // TODO: Once jobs are implemented, uncomment and fill the following line
-    // print_job_bg_start(job_id, pid, cmd);
+    //create job here
+    struct Job newJob={done: false, job_id : 0, bg : true};
+    newJob.pids = new_pidQueue(10);
+
+    print_job_bg_start(newJob.job_id, 0, get_command_string());
+    push_back_JobQueue(&globalState.job_queue, newJob);
+    //newJob.
+    for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
+      create_process(holders[i], i,  plumber_pipes, &newJob);
+      num_processes++;
+    }
   }
 }
