@@ -25,7 +25,7 @@ typedef struct Job{
  int job_id;
  Command cmd;
  bool bg;
- bool done;
+ int  done;
  struct pidQueue pids;
 };
 
@@ -85,7 +85,31 @@ void write_env(const char* env_var, const char* val) {
 // Check the status of background jobs
 void check_jobs_bg_status() {
   // TODO: Check on the statuses of all of the background jobs
-  IMPLEMENT_ME();
+  //IMPLEMENT_ME();
+
+  size_t  l_queue = length_JobQueue(&globalState.job_queue);
+  int j_num = 0;
+  int j_done =0;
+          printf("%d\n", l_queue );
+
+  while (j_num < l_queue) {
+    struct Job testJob= pop_front_JobQueue(&globalState.job_queue);
+      printf("%d\n", testJob.done );
+      if (testJob.done){
+          // print_job_bg_complete(job_id, pid, cmd);
+          j_done=j_done + 1;
+
+      }else {
+
+        //testJob.job_id = j_num -j_done;
+        push_back_JobQueue(&globalState.job_queue, testJob);
+
+
+      }
+      j_num ++ ;
+
+  }
+
 
   // TODO: Once jobs are implemented, uncomment and fill the following line
   // print_job_bg_complete(job_id, pid, cmd);
@@ -159,11 +183,12 @@ void run_cd(CDCommand cmd) {
     }
     else{
       //changed
-
-      write_env("PWD", cmd.dir);
+      char* dir = getcwd(NULL, 1024);
+      write_env("PWD", dir);
       write_env("OLD_PWD",  oldDir);
       free(oldDir);
-    //  delete(oldDir);
+      free(dir);
+
     }
   }
 }
@@ -321,6 +346,7 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   bool r_out = holder.flags & REDIRECT_OUT;
   bool r_app = holder.flags & REDIRECT_APPEND;
 
+
   int new_id= p_num%2;
   int old_id= new_id? 0:1;
 
@@ -342,19 +368,27 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
     if (p_in){
       close(plumber_pipes[old_id][1]);
     }
-    if(!(&j->bg))
+    if(!(holder.flags& BACKGROUND))
       wait(pid_id);
+
   }
   else
   {
       //child
     if(r_in){
-      int file_name= open(holder.redirect_in , O_RDONLY| O_CREAT , S_IRWXU);
-      dup2(file_name,STDIN_FILENO );
+      int file_name= open(holder.redirect_in , O_RDONLY);
+          if(file_name<0){
+            printf("%s\n", "error file not found" );
+            exit(0);
+          }
+    dup2(file_name,STDIN_FILENO );
       }
-    if(r_out){
-        int file_out= open(holder.redirect_out , O_WRONLY);
+  if(r_out && !r_app){
+        int file_out= open(holder.redirect_out , O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU |S_IRWXG | S_IRWXO );
         dup2(file_out,STDOUT_FILENO);
+    } else if (r_app) {
+      int file_app= open(holder.redirect_out , O_WRONLY|O_APPEND| O_CREAT, S_IRWXU |S_IRWXG | S_IRWXO );
+      dup2(file_app,STDOUT_FILENO);
     }
     if (p_in){
       close(plumber_pipes[new_id][0]);
@@ -371,15 +405,14 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
 
   if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
     child_run_command(holder.cmd);
-
   exit(0);
+
   }
-  (void) r_in;  // Silence unused variable warning
-  (void) r_out; // Silence unused variable warning
-  (void) r_app; // Silence unused variable warning
+
   removeFromIDQueue(&j->pids, pid_id);
   if(is_empty_pidQueue(&j->pids)){
-    j->done = true;
+    j->done = 1;
+
   }
 }
 
@@ -411,7 +444,7 @@ void run_script(CommandHolder* holders) {
 
   if (!(holders[0].flags & BACKGROUND)) {
     //create job here
-    struct Job newJob={done: false, job_id : 0, bg : false};
+    struct Job newJob={done: 0, job_id : 0, bg : 0};
     newJob.pids = new_pidQueue(10);
     //newJob.
     for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
@@ -422,7 +455,16 @@ void run_script(CommandHolder* holders) {
   else {
 
     //create job here
-    struct Job newJob={done: false, job_id : 0, bg : true};
+    int id =  1;
+
+    if (is_empty_JobQueue(&globalState.job_queue)){
+      id =1; }
+    else{
+      struct Job lastJob = peek_back_JobQueue(&globalState.job_queue);
+      id=lastJob.job_id +1;
+    }
+
+    struct Job newJob={done: 0, job_id : id, bg : 1};
     newJob.pids = new_pidQueue(10);
 
     print_job_bg_start(newJob.job_id, 0, get_command_string());
