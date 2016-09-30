@@ -18,6 +18,7 @@ static char* env_val;
 //pipe deque
 int plumber_pipes[2][2];
 
+
 IMPLEMENT_DEQUE_STRUCT(pidQueue, int);
 IMPLEMENT_DEQUE(pidQueue, int);
 
@@ -90,14 +91,31 @@ void check_jobs_bg_status() {
   size_t  l_queue = length_JobQueue(&globalState.job_queue);
   int j_num = 0;
   int j_done =0;
-          printf("%d\n", l_queue );
-
+  printf("%d\n",l_queue );
+  int status;
   while (j_num < l_queue) {
     struct Job testJob= pop_front_JobQueue(&globalState.job_queue);
-      printf("%d\n", testJob.done );
-      if (testJob.done){
-          // print_job_bg_complete(job_id, pid, cmd);
-          j_done=j_done + 1;
+    struct pidQueue testpid = testJob.pids;
+    size_t pidlength;
+    int* pidarray= as_array_pidQueue(&testpid, &pidlength);
+    int done =0;
+    size_t pcheck = 0;
+    while ( pcheck < pidlength) {
+      if (pidarray[pcheck]==0||waitpid(pidarray[pcheck], &status, WNOHANG)== 0) {
+        break;
+      }
+      pcheck++;
+
+    }
+      if(pcheck==pidlength){
+        done=1;
+      }
+      free(pidarray);
+
+
+      if (done){
+          print_job_bg_complete(testJob.job_id, testJob.job_id,  get_command_string());
+
 
       }else {
 
@@ -327,6 +345,51 @@ void removeFromIDQueue(pidQueue *q, int p){
     // free(temp);
   }
 }
+
+void Jobdone(int j_id)
+{
+
+  struct Job testJob= pop_back_JobQueue(&globalState.job_queue);
+
+  if(testJob.job_id == j_id)
+  {
+      testJob.done= 1;
+
+      push_back_JobQueue(&globalState.job_queue, testJob);
+      return;
+  }
+  int clean_up=0;
+
+  while ( clean_up < length_JobQueue(&globalState.job_queue) ) {
+   testJob= pop_front_JobQueue(&globalState.job_queue);
+   if(testJob.job_id == j_id)
+   {
+
+       testJob.done= 1;
+       push_front_JobQueue(&globalState.job_queue, testJob);
+       break;
+
+   }
+   else{
+      push_back_JobQueue(&globalState.job_queue, testJob);
+   }
+
+
+   clean_up ++;
+  }
+  if(clean_up== length_JobQueue(&globalState.job_queue))
+    {
+      printf("%s\n", " The job wasn't in the queue" );
+      return;
+    }
+    for (size_t i = 0; i < clean_up; i++) {
+      testJob= pop_back_JobQueue(&globalState.job_queue);
+      push_front_JobQueue(&globalState.job_queue, testJob);
+    }
+
+
+
+}
 /**
  * @brief Create a process centered around the @a Command in the @a
  * CommandHolder setting up redirects and pipes where needed
@@ -405,15 +468,18 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
 
   if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
     child_run_command(holder.cmd);
+    //removeFromIDQueue(&j->pids, pid_id);
+
   exit(0);
 
   }
+  // if(/*is_empty_pidQueue(&j->pids) */ holder.flags & BACKGROUND){
+  //   waitpid()
+  //
+  //   Jobdone( j->job_id);
+  //
+  // }
 
-  removeFromIDQueue(&j->pids, pid_id);
-  if(is_empty_pidQueue(&j->pids)){
-    j->done = 1;
-
-  }
 }
 
 // Run a list of commands
@@ -455,7 +521,7 @@ void run_script(CommandHolder* holders) {
   else {
 
     //create job here
-    int id =  1;
+    int id;
 
     if (is_empty_JobQueue(&globalState.job_queue)){
       id =1; }
@@ -470,6 +536,7 @@ void run_script(CommandHolder* holders) {
     print_job_bg_start(newJob.job_id, 0, get_command_string());
     push_back_JobQueue(&globalState.job_queue, newJob);
     //newJob.
+
     for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
       create_process(holders[i], i,  plumber_pipes, &newJob);
       num_processes++;
