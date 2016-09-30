@@ -24,8 +24,8 @@ IMPLEMENT_DEQUE(pidQueue, int);
 
 typedef struct Job{
  int job_id;
-
-    char*  cmd;
+ Command cmd;
+ pid_t first;
  bool bg;
  int  done;
  struct pidQueue pids;
@@ -100,30 +100,19 @@ void check_jobs_bg_status() {
     int done=1;
     size_t pcheck = 0;
     while ( pcheck < length_pidQueue(&testJob.pids)) {
-      int tpid = pop_front_pidQueue(&testJob.pids);J
+      int tpid = pop_front_pidQueue(&testJob.pids);
       if (waitpid(tpid, &status, WNOHANG)== 0) {
         done= 0;
-        push_back_pidQueue(&testJob.pids, tpid);
       }
-
+      push_back_pidQueue(&testJob.pids, tpid);
       pcheck++;
-
     }
-
-
-
-      if (is_empty_pidQueue(&testJob.pids)){
-          print_job_bg_complete(testJob.job_id, tpid,  testJob.cmd);
-
-
-      }else {
-
-        push_back_JobQueue(&globalState.job_queue, testJob);
-
-
-      }
-      j_num ++ ;
-
+    if (done){
+        print_job_bg_complete(testJob.job_id, tpid,  get_command_string());
+    }else {
+      push_back_JobQueue(&globalState.job_queue, testJob);
+    }
+    j_num ++ ;
   }
 
 
@@ -217,6 +206,8 @@ void run_kill(KillCommand cmd) {
   // TODO: Remove warning silencers
   (void) signal; // Silence unused variable warning
   (void) job_id; // Silence unused variable warning
+
+
 
   // TODO: Kill a background job
   IMPLEMENT_ME();
@@ -431,9 +422,12 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
     }
     if(!(holder.flags& BACKGROUND))
       wait(pid_id);
-    if (holder.flags& BACKGROUND)
+    if (holder.flags& BACKGROUND){
       pushpid(j->job_id, pid_id);
-
+      if(!p_in){
+        j->first = pid_id;
+      }
+    }
   }
   else
   {
@@ -465,6 +459,7 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   close(plumber_pipes[new_id][1]);
   close(plumber_pipes[old_id][1]);
   close(plumber_pipes[old_id][0]);
+
 
   if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
     child_run_command(holder.cmd);
@@ -531,10 +526,8 @@ void run_script(CommandHolder* holders) {
     }
 
     struct Job newJob={done: 0, job_id : id, bg : 1};
-    newJob.pids = new_pidQueue(10);
-    newJob.cmd= get_command_string();
+    newJob.pids = new_pidQueue(0);
 
-    print_job_bg_start(newJob.job_id, 0, get_command_string());
     push_back_JobQueue(&globalState.job_queue, newJob);
     //newJob.
 
@@ -542,5 +535,6 @@ void run_script(CommandHolder* holders) {
       create_process(holders[i], i,  plumber_pipes, &newJob);
       num_processes++;
     }
+    print_job_bg_start(newJob.job_id, newJob.first, get_command_string());
   }
 }
