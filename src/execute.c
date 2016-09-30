@@ -96,21 +96,22 @@ void check_jobs_bg_status() {
   while (j_num < l_queue) {
     struct Job testJob= pop_front_JobQueue(&globalState.job_queue);
     struct pidQueue testpid = testJob.pids;
-    size_t pidlength;
-    int* pidarray= as_array_pidQueue(&testpid, &pidlength);
+    int tpid;
     int done =0;
     size_t pcheck = 0;
-    while ( pcheck < pidlength) {
-      if (pidarray[pcheck]==0||waitpid(pidarray[pcheck], &status, WNOHANG)== 0) {
+    while ( pcheck < length_pidQueue(&testpid)) {
+      int tpid = pop_front_pidQueue(&testpid);
+      if (tpid==0||waitpid(tpid, &status, WNOHANG)== 0) {
+        push_front_pidQueue(&testpid, tpid);
         break;
       }
       pcheck++;
 
     }
-      if(pcheck==pidlength){
+      if(is_empty_pidQueue(&testpid)){
         done=1;
       }
-      free(pidarray);
+
 
 
       if (done){
