@@ -24,7 +24,8 @@ IMPLEMENT_DEQUE(pidQueue, int);
 
 typedef struct Job{
  int job_id;
- Command cmd;
+
+    char*  cmd;
  bool bg;
  int  done;
  struct pidQueue pids;
@@ -112,7 +113,7 @@ void check_jobs_bg_status() {
 
 
       if (is_empty_pidQueue(&testJob.pids)){
-          print_job_bg_complete(testJob.job_id, tpid,  get_command_string());
+          print_job_bg_complete(testJob.job_id, tpid,  testJob.cmd);
 
 
       }else {
@@ -531,6 +532,7 @@ void run_script(CommandHolder* holders) {
 
     struct Job newJob={done: 0, job_id : id, bg : 1};
     newJob.pids = new_pidQueue(10);
+    newJob.cmd= get_command_string();
 
     print_job_bg_start(newJob.job_id, 0, get_command_string());
     push_back_JobQueue(&globalState.job_queue, newJob);
