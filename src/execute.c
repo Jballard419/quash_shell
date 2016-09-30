@@ -100,7 +100,7 @@ void check_jobs_bg_status() {
     int done=1;
     size_t pcheck = 0;
     while ( pcheck < length_pidQueue(&testJob.pids)) {
-      int tpid = pop_front_pidQueue(&testJob.pids);
+      int tpid = pop_front_pidQueue(&testJob.pids);J
       if (waitpid(tpid, &status, WNOHANG)== 0) {
         done= 0;
         push_back_pidQueue(&testJob.pids, tpid);
