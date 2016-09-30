@@ -29,7 +29,19 @@ typedef struct Job{
  bool bg;
  int  done;
  struct pidQueue pids;
+
+
+
 };
+
+void  theDonald(struct Job  *j){
+
+  destroy_pidQueue(&j->pids);
+  free(j->cmd);
+
+  free(j);
+
+}
 
 //jobs deque
 IMPLEMENT_DEQUE_STRUCT(JobQueue, struct Job);
@@ -100,19 +112,24 @@ void check_jobs_bg_status() {
     int done=1;
     size_t pcheck = 0;
     while ( pcheck < length_pidQueue(&testJob.pids)) {
-      int tpid = pop_front_pidQueue(&testJob.pids);J
+      int tpid = pop_front_pidQueue(&testJob.pids);
       if (waitpid(tpid, &status, WNOHANG)== 0) {
         done= 0;
         push_back_pidQueue(&testJob.pids, tpid);
+        break;
+      }else
+      {
+        //free(tpid);
+
       }
+
 
       pcheck++;
 
     }
 
 
-
-      if (is_empty_pidQueue(&testJob.pids)){
+      if (done== 1){
           print_job_bg_complete(testJob.job_id, tpid,  testJob.cmd);
 
 
@@ -486,7 +503,7 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
 void run_script(CommandHolder* holders) {
 
   if(!globalState.init){
-    globalState.job_queue = new_JobQueue(10);
+    globalState.job_queue = new_destructable_JobQueue(10,  theDonald );
     globalState.init = true;
   }
 
@@ -500,6 +517,8 @@ void run_script(CommandHolder* holders) {
   pipe(plumber_pipes[1]);
   if (get_command_holder_type(holders[0]) == EXIT &&
       get_command_holder_type(holders[1]) == EOC) {
+    empty_JobQueue(&globalState.job_queue);
+    destroy_JobQueue(&globalState.job_queue);
     end_main_loop();
     return;
   }
@@ -511,7 +530,7 @@ void run_script(CommandHolder* holders) {
   if (!(holders[0].flags & BACKGROUND)) {
     //create job here
     struct Job newJob={done: 0, job_id : 0, bg : 0};
-    newJob.pids = new_pidQueue(10);
+
     //newJob.
     for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
       create_process(holders[i], i,  plumber_pipes, &newJob);
