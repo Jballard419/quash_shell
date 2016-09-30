@@ -24,8 +24,9 @@ IMPLEMENT_DEQUE(pidQueue, int);
 
 typedef struct Job{
  int job_id;
-
-    char*  cmd;
+ Command cmd;
+ char* command;
+ pid_t first;
  bool bg;
  int  done;
  struct pidQueue pids;
@@ -37,7 +38,7 @@ typedef struct Job{
 void  theDonald(struct Job  *j){
 
   destroy_pidQueue(&j->pids);
-  free(j->cmd);
+  free(&j->cmd);
 
   free(j);
 
@@ -115,31 +116,19 @@ void check_jobs_bg_status() {
       int tpid = pop_front_pidQueue(&testJob.pids);
       if (waitpid(tpid, &status, WNOHANG)== 0) {
         done= 0;
-        push_back_pidQueue(&testJob.pids, tpid);
-        break;
-      }else
-      {
-        //free(tpid);
 
       }
-
+      push_back_pidQueue(&testJob.pids, tpid);
 
       pcheck++;
-
     }
 
-
-      if (done== 1){
-          print_job_bg_complete(testJob.job_id, tpid,  testJob.cmd);
-
-
-      }else {
-
-        push_back_JobQueue(&globalState.job_queue, testJob);
-
-
-      }
-      j_num ++ ;
+if (done){
+        print_job_bg_complete(testJob.job_id, tpid,  get_command_string());
+    }else {
+      push_back_JobQueue(&globalState.job_queue, testJob);
+    }
+    j_num ++ ;
 
   }
 
@@ -231,21 +220,30 @@ void run_kill(KillCommand cmd) {
   int signal = cmd.sig;
   int job_id = cmd.job;
 
-  // TODO: Remove warning silencers
-  (void) signal; // Silence unused variable warning
-  (void) job_id; // Silence unused variable warning
-
-  // TODO: Kill a background job
-  IMPLEMENT_ME();
+  size_t x = length_JobQueue(&globalState.job_queue);
+  struct Job tempJob = peek_front_JobQueue(&globalState.job_queue);
+  for(int i = 0; i<x; i++){
+    tempJob = pop_front_JobQueue(&globalState.job_queue);
+    if(tempJob.job_id!= job_id){
+      push_back_JobQueue(&globalState.job_queue, tempJob);
+    }
+    else{
+      size_t z = length_pidQueue(&tempJob.pids);
+      pid_t tempPid;
+      for(int i = 0; i < z; i++){
+        tempPid = pop_front_pidQueue(&tempJob.pids);
+        kill(tempPid, cmd.sig);
+      }
+      break;
+    }
+  }
 }
 
 
 // Prints the current working directory to stdout
 void run_pwd() {
-  // TODO: Print the current working directory
-  //IMPLEMENT_ME();
   char *buf = get_current_dir_name() ;
-printf("%s\n",buf);
+  printf("%s\n",buf);
   free(buf);
   // Flush the buffer before returning
   fflush(stdout);
@@ -254,8 +252,12 @@ printf("%s\n",buf);
 
 // Prints all background jobs currently in the job list to stdout
 void run_jobs() {
-  // TODO: Print background jobs
-  IMPLEMENT_ME();
+  struct Job testJob;
+  for(int i = 0; i < length_JobQueue(&globalState.job_queue); i++){
+    testJob = pop_front_JobQueue(&globalState.job_queue);
+    print_job(testJob.job_id, testJob.first, testJob.command);
+    push_back_JobQueue(&globalState.job_queue, testJob);
+  }
 }
 
 /***************************************************************************
@@ -381,6 +383,8 @@ void  pushpid(int j_id, int p_id )
    {
 
         push_front_pidQueue(&testJob.pids, p_id);
+
+        //TODO:: why are we pushing back to the front?
        push_front_JobQueue(&globalState.job_queue, testJob);
        break;
 
@@ -401,9 +405,6 @@ void  pushpid(int j_id, int p_id )
       testJob= pop_back_JobQueue(&globalState.job_queue);
       push_front_JobQueue(&globalState.job_queue, testJob);
     }
-
-
-
 }
 /**
  * @brief Create a process centered around the @a Command in the @a
@@ -435,12 +436,13 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
 
   int pid_id=fork();
   //push this p_id to the pids queue
-
-
+  if(!p_in){
+    j->first = pid_id;
+  }
 
   if(pid_id!=0){
     //printf("%s\n", "parent");
-    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT)
+    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT )
     parent_run_command(holder.cmd);
 
     if (p_in){
@@ -448,9 +450,9 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
     }
     if(!(holder.flags& BACKGROUND))
       wait(pid_id);
-    if (holder.flags& BACKGROUND)
+    if (holder.flags& BACKGROUND){
       pushpid(j->job_id, pid_id);
-
+    }
   }
   else
   {
@@ -483,6 +485,7 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   close(plumber_pipes[old_id][1]);
   close(plumber_pipes[old_id][0]);
 
+
   if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
     child_run_command(holder.cmd);
     //removeFromIDQueue(&j->pids, pid_id);
@@ -490,13 +493,6 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   exit(0);
 
   }
-  // if(/*is_empty_pidQueue(&j->pids) */ holder.flags & BACKGROUND){
-  //   waitpid()
-  //
-  //   Jobdone( j->job_id);
-  //
-  // }
-
 }
 
 // Run a list of commands
@@ -550,16 +546,15 @@ void run_script(CommandHolder* holders) {
     }
 
     struct Job newJob={done: 0, job_id : id, bg : 1};
-    newJob.pids = new_pidQueue(10);
-    newJob.cmd= get_command_string();
+    newJob.pids = new_pidQueue(0);
+    newJob.command = get_command_string();
 
-    print_job_bg_start(newJob.job_id, 0, get_command_string());
     push_back_JobQueue(&globalState.job_queue, newJob);
-    //newJob.
 
     for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i){
       create_process(holders[i], i,  plumber_pipes, &newJob);
       num_processes++;
     }
+    print_job_bg_start(newJob.job_id, newJob.first, get_command_string());
   }
 }
