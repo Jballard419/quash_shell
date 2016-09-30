@@ -30,18 +30,12 @@ typedef struct Job{
  bool bg;
  int  done;
  struct pidQueue pids;
-
-
-
 };
 
 void  theDonald(struct Job  *j){
-
   destroy_pidQueue(&j->pids);
   free(&j->cmd);
-
   free(j);
-
 }
 
 //jobs deque
@@ -75,7 +69,6 @@ char* get_current_directory(bool* should_free) {
   // cwd = getcwd(NULL,1024);
   // Change this to true if necessary
   *should_free = true;
-
   return  get_current_dir_name();
 }
 
@@ -255,7 +248,9 @@ void run_jobs() {
   struct Job testJob;
   for(int i = 0; i < length_JobQueue(&globalState.job_queue); i++){
     testJob = pop_front_JobQueue(&globalState.job_queue);
-    print_job(testJob.job_id, testJob.first, testJob.command);
+    printf("[%d]\t%8d\t%s\n", testJob.job_id, testJob.first, testJob.command);
+    fflush(stdout);
+    // print_job(testJob.job_id, testJob.first, testJob.command);
     push_back_JobQueue(&globalState.job_queue, testJob);
   }
 }
@@ -436,14 +431,14 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
 
   int pid_id=fork();
   //push this p_id to the pids queue
-  if(!p_in){
-    j->first = pid_id;
-  }
 
   if(pid_id!=0){
     //printf("%s\n", "parent");
-    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT )
-    parent_run_command(holder.cmd);
+    // if(!p_in){
+    //   j->first = pid_id;
+    // }
+    if(get_command_type(holder.cmd) == CD || get_command_type(holder.cmd) == EXPORT || get_command_type(holder.cmd) == JOBS )
+      parent_run_command(holder.cmd);
 
     if (p_in){
       close(plumber_pipes[old_id][1]);
@@ -486,7 +481,7 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
   close(plumber_pipes[old_id][0]);
 
 
-  if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT)
+  if(get_command_type(holder.cmd) != CD && get_command_type(holder.cmd) != EXPORT && get_command_type(holder.cmd) != JOBS)
     child_run_command(holder.cmd);
     //removeFromIDQueue(&j->pids, pid_id);
 
