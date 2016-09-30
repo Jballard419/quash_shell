@@ -308,6 +308,34 @@
     assert(deq->data != NULL); /* Make sure the structure is valid */   \
     assert(!is_empty_##struct_name(deq));                               \
     deq->data[(deq->back + deq->cap - 1) % deq->cap] = element;         \
+  }                                                                     \
+                                                                        \
+  void update_and_destroy_front_##struct_name(struct_name* deq,         \
+                                              type element) {           \
+    assert(deq != NULL);                                                \
+    assert(deq->data != NULL); /* Make sure the structure is valid */   \
+    assert(!is_empty_##struct_name(deq));                               \
+                                                                        \
+    size_t idx = deq->front;                                            \
+                                                                        \
+    if (deq->destructor != NULL)                                        \
+      deq->destructor(deq->data[idx]);                                  \
+                                                                        \
+    deq->data[idx] = element;                                           \
+  }                                                                     \
+                                                                        \
+  void update_and_destroy_back_##struct_name(struct_name* deq,          \
+                                             type element) {            \
+    assert(deq != NULL);                                                \
+    assert(deq->data != NULL); /* Make sure the structure is valid */   \
+    assert(!is_empty_##struct_name(deq));                               \
+                                                                        \
+    size_t idx = (deq->back + deq->cap - 1) % deq->cap;                 \
+                                                                        \
+    if (deq->destructor != NULL)                                        \
+      deq->destructor(deq->data[idx]);                                  \
+                                                                        \
+    deq->data[idx] = element;                                           \
   }
 
 // The following deque is for example and documentation purposes only
@@ -514,7 +542,7 @@ typedef struct Example {
  *
  * @brief Remove an element from the back of the deque
  *
- * @param deq A pointer to the deque to view the first element from
+ * @param deq A pointer to the deque to view the last element from
  *
  * @return A copy of the element removed from the back of the queue
  *
@@ -524,6 +552,8 @@ typedef struct Example {
  * @fn void update_front_Example(Example* deq, Type element)
  *
  * @brief Change the element at the front of the deque to be a copy of element
+ * If a destructor is presesnt, then call the destructor on the value of the
+ * element that is being replaced.
  *
  * @param deq A pointer to the deque to update
  *
@@ -534,7 +564,61 @@ typedef struct Example {
 /**
  * @fn void update_back_Example(Example* deq, Type element)
  *
- * @brief Change the element at the front of the deque to be a copy of element
+ * @brief Change the element at the back of the deque to be a copy of element.
+ * If a destructor is presesnt, then call the destructor on the value of the
+ * element that is being replaced.
+ *
+ * @param deq A pointer to the deque to update
+ *
+ * @param element The element to copy into the current last element in the deque
+ *
+ * @sa Example, Type
+ */
+/**
+ * @fn void update_front_Example(Example* deq, Type element)
+ *
+ * @brief Change the element at the front of the deque to be a copy of element.
+ * This will NOT call the destructor on the old element. This is useful for
+ * simply replacing a few fields.
+ *
+ * @param deq A pointer to the deque to update
+ *
+ * @param element The element to update the first element to
+ *
+ * @sa Example, Type
+ */
+/**
+ * @fn void update_back_Example(Example* deq, Type element)
+ *
+ * @brief Change the element at the back of the deque to be a copy of element.
+ * This will NOT call the destructor on the old element. This is useful for
+ * simply replacing a few fields.
+ *
+ * @param deq A pointer to the deque to update
+ *
+ * @param element The element to copy into the current last element in the deque
+ *
+ * @sa Example, Type
+ */
+/**
+ * @fn void update_and_destroy_front_Example(Example* deq, Type element)
+ *
+ * @brief Change the element at the front of the deque to be a copy of element.
+ * If a destructor is presesnt, then call the destructor on the element that is
+ * being replaced.
+ *
+ * @param deq A pointer to the deque to update
+ *
+ * @param element The element to update the first element to
+ *
+ * @sa Example, Type
+ */
+/**
+ * @fn void update_and_destroy_back_Example(Example* deq, Type element)
+ *
+ * @brief Change the element at the back of the deque to be a copy of element.
+ * If a destructor is presesnt, then call the destructor on the element that is
+ * being replaced.
  *
  * @param deq A pointer to the deque to update
  *

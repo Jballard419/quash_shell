@@ -64,9 +64,9 @@ void \hyperlink{deque_8h_a63a0566b60e881121b5ba029a25cb9ae}{push\+\_\+back\+\_\+
 \hyperlink{deque_8h_ac9c83c2070eb6b5891cf742b90f54c68}{Type} \hyperlink{deque_8h_a17ee221f1873599af8849e47af1d490c}{peek\+\_\+back\+\_\+\+Example} (\hyperlink{structExample}{Example} $\ast$)
 \begin{DoxyCompactList}\small\item\em Remove an element from the back of the deque. \end{DoxyCompactList}\item 
 void \hyperlink{deque_8h_a2f5457e6575eb38d59b7504770ca247e}{update\+\_\+front\+\_\+\+Example} (\hyperlink{structExample}{Example} $\ast$, \hyperlink{deque_8h_ac9c83c2070eb6b5891cf742b90f54c68}{Type})
-\begin{DoxyCompactList}\small\item\em Change the element at the front of the deque to be a copy of element. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Change the element at the front of the deque to be a copy of element If a destructor is presesnt, then call the destructor on the value of the element that is being replaced. \end{DoxyCompactList}\item 
 void \hyperlink{deque_8h_a0705ac52e0952213b9f1ce7f80bf977e}{update\+\_\+back\+\_\+\+Example} (\hyperlink{structExample}{Example} $\ast$, \hyperlink{deque_8h_ac9c83c2070eb6b5891cf742b90f54c68}{Type})
-\begin{DoxyCompactList}\small\item\em Change the element at the front of the deque to be a copy of element. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Change the element at the back of the deque to be a copy of element. If a destructor is presesnt, then call the destructor on the value of the element that is being replaced. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
@@ -375,7 +375,7 @@ Remove an element from the back of the deque.
 
 
 \begin{DoxyParams}{Parameters}
-{\em deq} & A pointer to the deque to view the first element from\\
+{\em deq} & A pointer to the deque to view the last element from\\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -504,7 +504,9 @@ Insert an element to the front of the deque.
 )}\hypertarget{deque_8h_a0705ac52e0952213b9f1ce7f80bf977e}{}\label{deque_8h_a0705ac52e0952213b9f1ce7f80bf977e}
 
 
-Change the element at the front of the deque to be a copy of element. 
+Change the element at the back of the deque to be a copy of element. If a destructor is presesnt, then call the destructor on the value of the element that is being replaced. 
+
+Change the element at the back of the deque to be a copy of element. This will N\+OT call the destructor on the old element. This is useful for simply replacing a few fields.
 
 
 \begin{DoxyParams}{Parameters}
@@ -526,7 +528,9 @@ Change the element at the front of the deque to be a copy of element.
 )}\hypertarget{deque_8h_a2f5457e6575eb38d59b7504770ca247e}{}\label{deque_8h_a2f5457e6575eb38d59b7504770ca247e}
 
 
-Change the element at the front of the deque to be a copy of element. 
+Change the element at the front of the deque to be a copy of element If a destructor is presesnt, then call the destructor on the value of the element that is being replaced. 
+
+Change the element at the front of the deque to be a copy of element. This will N\+OT call the destructor on the old element. This is useful for simply replacing a few fields.
 
 
 \begin{DoxyParams}{Parameters}

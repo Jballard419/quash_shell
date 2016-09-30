@@ -277,9 +277,9 @@ run_test_checked() {
     run_test_setup_script $script_name.set
 
     # Run the test
-    valgrind --leak-check=full --show-leak-kinds=all $QUASH \
-             < "$__script"                                  \
-             > $OUTPUT                                      \
+    valgrind --leak-check=full --track-origins=yes $QUASH \
+             < "$__script"                                \
+             > $OUTPUT                                    \
              2> $test_stderr_file
 
     # Run cleanup script to alter variable outputs and cleanup files created by
@@ -367,9 +367,9 @@ run_test_unchecked() {
     run_test_setup_script $script_name.set
 
     # Run the test
-    valgrind --leak-check=full --show-leak-kinds=all $QUASH \
-             < "$__script"                                  \
-             > $test_stdout_file                            \
+    valgrind --leak-check=full --track-origins=yes $QUASH \
+             < "$__script"                                \
+             > $test_stdout_file                          \
              2> $test_stderr_file
 
     # Run cleanup script to alter variable outputs and cleanup files created by

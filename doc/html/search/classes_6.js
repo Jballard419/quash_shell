@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['redirect',['Redirect',['../structRedirect.html',1,'']]]
+  ['pidqueue',['pidQueue',['../structpidQueue.html',1,'']]]
 ];

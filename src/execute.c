@@ -91,36 +91,31 @@ void check_jobs_bg_status() {
   size_t  l_queue = length_JobQueue(&globalState.job_queue);
   int j_num = 0;
   int j_done =0;
-  printf("%d\n",l_queue );
+  //printf("%d\n",l_queue );
   int status;
   while (j_num < l_queue) {
     struct Job testJob= pop_front_JobQueue(&globalState.job_queue);
-    struct pidQueue testpid = testJob.pids;
     int tpid;
-    int done =0;
+
     size_t pcheck = 0;
-    while ( pcheck < length_pidQueue(&testpid)) {
-      int tpid = pop_front_pidQueue(&testpid);
-      if (tpid==0||waitpid(tpid, &status, WNOHANG)== 0) {
-        push_front_pidQueue(&testpid, tpid);
+    while ( pcheck < length_pidQueue(&testJob.pids)) {
+      int tpid = pop_front_pidQueue(&testJob.pids);
+      if (waitpid(tpid, &status, WNOHANG)== 0) {
+        push_front_pidQueue(&testJob.pids, tpid);
         break;
       }
       pcheck++;
 
     }
-      if(is_empty_pidQueue(&testpid)){
-        done=1;
-      }
+      
 
 
-
-      if (done){
-          print_job_bg_complete(testJob.job_id, testJob.job_id,  get_command_string());
+      if (is_empty_pidQueue(&testJob.pids)){
+          print_job_bg_complete(testJob.job_id, tpid,  get_command_string());
 
 
       }else {
 
-        //testJob.job_id = j_num -j_done;
         push_back_JobQueue(&globalState.job_queue, testJob);
 
 
@@ -347,14 +342,14 @@ void removeFromIDQueue(pidQueue *q, int p){
   }
 }
 
-void Jobdone(int j_id)
+void  pushpid(int j_id, int p_id )
 {
 
   struct Job testJob= pop_back_JobQueue(&globalState.job_queue);
 
   if(testJob.job_id == j_id)
   {
-      testJob.done= 1;
+      push_front_pidQueue(&testJob.pids, p_id);
 
       push_back_JobQueue(&globalState.job_queue, testJob);
       return;
@@ -366,7 +361,7 @@ void Jobdone(int j_id)
    if(testJob.job_id == j_id)
    {
 
-       testJob.done= 1;
+        push_front_pidQueue(&testJob.pids, p_id);
        push_front_JobQueue(&globalState.job_queue, testJob);
        break;
 
@@ -421,8 +416,8 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
 
   int pid_id=fork();
   //push this p_id to the pids queue
-  push_front_pidQueue(&j->pids, pid_id);
-  // printf("%d", peek_front_pidQueue(&j->pids));
+
+
 
   if(pid_id!=0){
     //printf("%s\n", "parent");
@@ -434,6 +429,8 @@ void create_process(CommandHolder holder, int p_num, int plumber_pipes[2][2], st
     }
     if(!(holder.flags& BACKGROUND))
       wait(pid_id);
+    if (holder.flags& BACKGROUND)
+      pushpid(j->job_id, pid_id);
 
   }
   else

@@ -179,10 +179,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a17ee221f1873599af8849e47af1d490c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove an element from the back of the deque.  <a href="#a17ee221f1873599af8849e47af1d490c">More...</a><br /></td></tr>
 <tr class="separator:a17ee221f1873599af8849e47af1d490c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f5457e6575eb38d59b7504770ca247e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="deque_8h.html#a2f5457e6575eb38d59b7504770ca247e">update_front_Example</a> (<a class="el" href="structExample.html">Example</a> *, <a class="el" href="deque_8h.html#ac9c83c2070eb6b5891cf742b90f54c68">Type</a>)</td></tr>
-<tr class="memdesc:a2f5457e6575eb38d59b7504770ca247e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the element at the front of the deque to be a copy of element.  <a href="#a2f5457e6575eb38d59b7504770ca247e">More...</a><br /></td></tr>
+<tr class="memdesc:a2f5457e6575eb38d59b7504770ca247e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the element at the front of the deque to be a copy of element If a destructor is presesnt, then call the destructor on the value of the element that is being replaced.  <a href="#a2f5457e6575eb38d59b7504770ca247e">More...</a><br /></td></tr>
 <tr class="separator:a2f5457e6575eb38d59b7504770ca247e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0705ac52e0952213b9f1ce7f80bf977e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="deque_8h.html#a0705ac52e0952213b9f1ce7f80bf977e">update_back_Example</a> (<a class="el" href="structExample.html">Example</a> *, <a class="el" href="deque_8h.html#ac9c83c2070eb6b5891cf742b90f54c68">Type</a>)</td></tr>
-<tr class="memdesc:a0705ac52e0952213b9f1ce7f80bf977e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the element at the front of the deque to be a copy of element.  <a href="#a0705ac52e0952213b9f1ce7f80bf977e">More...</a><br /></td></tr>
+<tr class="memdesc:a0705ac52e0952213b9f1ce7f80bf977e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the element at the back of the deque to be a copy of element. If a destructor is presesnt, then call the destructor on the value of the element that is being replaced.  <a href="#a0705ac52e0952213b9f1ce7f80bf977e">More...</a><br /></td></tr>
 <tr class="separator:a0705ac52e0952213b9f1ce7f80bf977e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -557,7 +557,7 @@ Functions</h2></td></tr>
 <p>Remove an element from the back of the deque. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">deq</td><td>A pointer to the deque to view the first element from</td></tr>
+    <tr><td class="paramname">deq</td><td>A pointer to the deque to view the last element from</td></tr>
   </table>
   </dd>
 </dl>
@@ -740,7 +740,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Change the element at the front of the deque to be a copy of element. </p>
+<p>Change the element at the back of the deque to be a copy of element. If a destructor is presesnt, then call the destructor on the value of the element that is being replaced. </p>
+<p>Change the element at the back of the deque to be a copy of element. This will NOT call the destructor on the old element. This is useful for simply replacing a few fields.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">deq</td><td>A pointer to the deque to update</td></tr>
@@ -776,7 +777,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Change the element at the front of the deque to be a copy of element. </p>
+<p>Change the element at the front of the deque to be a copy of element If a destructor is presesnt, then call the destructor on the value of the element that is being replaced. </p>
+<p>Change the element at the front of the deque to be a copy of element. This will NOT call the destructor on the old element. This is useful for simply replacing a few fields.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">deq</td><td>A pointer to the deque to update</td></tr>

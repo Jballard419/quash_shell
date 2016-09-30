@@ -87,8 +87,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">execute.c File Reference</div>  </div>
 </div><!--header-->
@@ -97,9 +100,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Implements interface functions between Quash and the environment and functions that interpret an execute commands.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="execute_8h_source.html">execute.h</a>&quot;</code><br />
+<code>#include &lt;fcntl.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="deque_8h_source.html">deque.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="quash_8h_source.html">quash.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpidQueue.html">pidQueue</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJob.html">Job</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJobQueue.html">JobQueue</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structState.html">State</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aed9cdd9fcf6575f8a352f61c5e13cb5d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aed9cdd9fcf6575f8a352f61c5e13cb5d"></a>
@@ -107,8 +123,125 @@ Macros</h2></td></tr>
 <tr class="memdesc:aed9cdd9fcf6575f8a352f61c5e13cb5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Note calls to any function that requires implementation. <br /></td></tr>
 <tr class="separator:aed9cdd9fcf6575f8a352f61c5e13cb5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a0ebdb9d7365084264ba00def96886c42"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ebdb9d7365084264ba00def96886c42"></a>
+typedef struct <a class="el" href="structpidQueue.html">pidQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pidQueue</b></td></tr>
+<tr class="separator:a0ebdb9d7365084264ba00def96886c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9f12e415e9892e5e50e11f1383c794d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa9f12e415e9892e5e50e11f1383c794d"></a>
+typedef struct <a class="el" href="structJobQueue.html">JobQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>JobQueue</b></td></tr>
+<tr class="separator:aa9f12e415e9892e5e50e11f1383c794d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aa1ae151ecb1fd6bad2999e9550f2aab7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1ae151ecb1fd6bad2999e9550f2aab7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>apply_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *, void(*)(int))</td></tr>
+<tr class="separator:aa1ae151ecb1fd6bad2999e9550f2aab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8331bedb3c3c29ad9128d5e19865b55e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8331bedb3c3c29ad9128d5e19865b55e"></a>
+<a class="el" href="structpidQueue.html">pidQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>new_pidQueue</b> (size_t init_cap)</td></tr>
+<tr class="separator:a8331bedb3c3c29ad9128d5e19865b55e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5686ad302303c58a8f3b166c2b3856e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5686ad302303c58a8f3b166c2b3856e"></a>
+<a class="el" href="structpidQueue.html">pidQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>new_destructable_pidQueue</b> (size_t init_cap, void(*destructor)(int))</td></tr>
+<tr class="separator:af5686ad302303c58a8f3b166c2b3856e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63e6e1f42e49c9985c655c06b7001a0e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63e6e1f42e49c9985c655c06b7001a0e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:a63e6e1f42e49c9985c655c06b7001a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75e0e4b08e05ea0b80350de6f9012160"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75e0e4b08e05ea0b80350de6f9012160"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>empty_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:a75e0e4b08e05ea0b80350de6f9012160"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2188b9c7da993b81126b3473a3c34cf0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2188b9c7da993b81126b3473a3c34cf0"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_empty_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:a2188b9c7da993b81126b3473a3c34cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad94d0390f3632baa3d8ee85b6d608b96"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad94d0390f3632baa3d8ee85b6d608b96"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>length_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:ad94d0390f3632baa3d8ee85b6d608b96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a302e054c90a47de545195543504ecef1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a302e054c90a47de545195543504ecef1"></a>
+int *&#160;</td><td class="memItemRight" valign="bottom"><b>as_array_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, size_t *len)</td></tr>
+<tr class="separator:a302e054c90a47de545195543504ecef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabb73a15035f6e01fdb1eed8c9298f1e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aabb73a15035f6e01fdb1eed8c9298f1e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>push_front_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, int element)</td></tr>
+<tr class="separator:aabb73a15035f6e01fdb1eed8c9298f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a768c820bf98b3b9c04726a5660255b5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a768c820bf98b3b9c04726a5660255b5c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>push_back_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, int element)</td></tr>
+<tr class="separator:a768c820bf98b3b9c04726a5660255b5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66938d15cd930476f90d9ef9ac67c3e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66938d15cd930476f90d9ef9ac67c3e0"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pop_front_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:a66938d15cd930476f90d9ef9ac67c3e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade39ef3213c630a3247353adbad88dda"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade39ef3213c630a3247353adbad88dda"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pop_back_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:ade39ef3213c630a3247353adbad88dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8b434f1686c492af5453ae2d635cd30"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8b434f1686c492af5453ae2d635cd30"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>peek_front_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:ac8b434f1686c492af5453ae2d635cd30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a161e9eb37b49fbae142afae17dbb0622"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a161e9eb37b49fbae142afae17dbb0622"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>peek_back_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq)</td></tr>
+<tr class="separator:a161e9eb37b49fbae142afae17dbb0622"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ad8abff0bd7c1d424dae89e7729720b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ad8abff0bd7c1d424dae89e7729720b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_front_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, int element)</td></tr>
+<tr class="separator:a5ad8abff0bd7c1d424dae89e7729720b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2854e2a3e07674c565d074d03e0dc6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab2854e2a3e07674c565d074d03e0dc6c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_back_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, int element)</td></tr>
+<tr class="separator:ab2854e2a3e07674c565d074d03e0dc6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a419c47b7f2900ea44e8e5a2400214838"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a419c47b7f2900ea44e8e5a2400214838"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_and_destroy_front_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, int element)</td></tr>
+<tr class="separator:a419c47b7f2900ea44e8e5a2400214838"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5855da69fb75016c437c226f66d04e11"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5855da69fb75016c437c226f66d04e11"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_and_destroy_back_pidQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *deq, int element)</td></tr>
+<tr class="separator:a5855da69fb75016c437c226f66d04e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1d2e083ed599c073ca4d8ddd71c8441"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac1d2e083ed599c073ca4d8ddd71c8441"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>apply_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *, void(*)(struct <a class="el" href="structJob.html">Job</a>))</td></tr>
+<tr class="separator:ac1d2e083ed599c073ca4d8ddd71c8441"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb697f07fe3bd4319568ed536dc60702"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb697f07fe3bd4319568ed536dc60702"></a>
+<a class="el" href="structJobQueue.html">JobQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>new_JobQueue</b> (size_t init_cap)</td></tr>
+<tr class="separator:acb697f07fe3bd4319568ed536dc60702"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada112a88e9db567c434a0d6283864da4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada112a88e9db567c434a0d6283864da4"></a>
+<a class="el" href="structJobQueue.html">JobQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>new_destructable_JobQueue</b> (size_t init_cap, void(*destructor)(struct <a class="el" href="structJob.html">Job</a>))</td></tr>
+<tr class="separator:ada112a88e9db567c434a0d6283864da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97db4b16f0c07536785cd8724eb57c77"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a97db4b16f0c07536785cd8724eb57c77"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:a97db4b16f0c07536785cd8724eb57c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae04ebc69eff6081310bd0949fa072317"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae04ebc69eff6081310bd0949fa072317"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>empty_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:ae04ebc69eff6081310bd0949fa072317"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c1804ee14f45c421e313ff3cfd48f54"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c1804ee14f45c421e313ff3cfd48f54"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_empty_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:a4c1804ee14f45c421e313ff3cfd48f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add664b32dc482ccddc6d2ed14e2786d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add664b32dc482ccddc6d2ed14e2786d1"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>length_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:add664b32dc482ccddc6d2ed14e2786d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b390cb2dbcbf9feed27aaf0d6f6934b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b390cb2dbcbf9feed27aaf0d6f6934b"></a>
+struct <a class="el" href="structJob.html">Job</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>as_array_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, size_t *len)</td></tr>
+<tr class="separator:a0b390cb2dbcbf9feed27aaf0d6f6934b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f157e54aa62d710c2a4fd561b9598cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f157e54aa62d710c2a4fd561b9598cc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>push_front_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, struct <a class="el" href="structJob.html">Job</a> element)</td></tr>
+<tr class="separator:a9f157e54aa62d710c2a4fd561b9598cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3040467cc1aa085324081841746e170e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3040467cc1aa085324081841746e170e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>push_back_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, struct <a class="el" href="structJob.html">Job</a> element)</td></tr>
+<tr class="separator:a3040467cc1aa085324081841746e170e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8da70b603302ab3564116190759df5f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8da70b603302ab3564116190759df5f0"></a>
+struct <a class="el" href="structJob.html">Job</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pop_front_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:a8da70b603302ab3564116190759df5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc34ce9f51987bbccb1711fc91206d1e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acc34ce9f51987bbccb1711fc91206d1e"></a>
+struct <a class="el" href="structJob.html">Job</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pop_back_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:acc34ce9f51987bbccb1711fc91206d1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87fe45cbf66dcb0ca25c325479035d7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87fe45cbf66dcb0ca25c325479035d7f"></a>
+struct <a class="el" href="structJob.html">Job</a>&#160;</td><td class="memItemRight" valign="bottom"><b>peek_front_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:a87fe45cbf66dcb0ca25c325479035d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad698efe1ef525a9e9eb7cff030437e8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad698efe1ef525a9e9eb7cff030437e8e"></a>
+struct <a class="el" href="structJob.html">Job</a>&#160;</td><td class="memItemRight" valign="bottom"><b>peek_back_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq)</td></tr>
+<tr class="separator:ad698efe1ef525a9e9eb7cff030437e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeedce1f99d44d574e4ac7867d70f5493"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeedce1f99d44d574e4ac7867d70f5493"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_front_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, struct <a class="el" href="structJob.html">Job</a> element)</td></tr>
+<tr class="separator:aeedce1f99d44d574e4ac7867d70f5493"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e36564c097c77c4ac4856e7191bf94e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e36564c097c77c4ac4856e7191bf94e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_back_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, struct <a class="el" href="structJob.html">Job</a> element)</td></tr>
+<tr class="separator:a2e36564c097c77c4ac4856e7191bf94e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a540d0571ba0e895cec68b4a35a95a77c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a540d0571ba0e895cec68b4a35a95a77c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_and_destroy_front_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, struct <a class="el" href="structJob.html">Job</a> element)</td></tr>
+<tr class="separator:a540d0571ba0e895cec68b4a35a95a77c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b5f3d097ba66dd92ed10666b5e8b861"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b5f3d097ba66dd92ed10666b5e8b861"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_and_destroy_back_JobQueue</b> (<a class="el" href="structJobQueue.html">JobQueue</a> *deq, struct <a class="el" href="structJob.html">Job</a> element)</td></tr>
+<tr class="separator:a4b5f3d097ba66dd92ed10666b5e8b861"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd83b7572960ddecb86a6f96d82fa040"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#acd83b7572960ddecb86a6f96d82fa040">get_current_directory</a> (bool *should_free)</td></tr>
 <tr class="memdesc:acd83b7572960ddecb86a6f96d82fa040"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the real current working directory.  <a href="#acd83b7572960ddecb86a6f96d82fa040">More...</a><br /></td></tr>
 <tr class="separator:acd83b7572960ddecb86a6f96d82fa040"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -152,21 +285,35 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
 <tr class="memitem:ae954ca554a8f66899f270560d68ec012"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#ae954ca554a8f66899f270560d68ec012">run_jobs</a> ()</td></tr>
 <tr class="memdesc:ae954ca554a8f66899f270560d68ec012"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the builtin jobs command to show the jobs list.  <a href="#ae954ca554a8f66899f270560d68ec012">More...</a><br /></td></tr>
 <tr class="separator:ae954ca554a8f66899f270560d68ec012"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75b252ab1292f5947f2bcd0454f6378b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#a75b252ab1292f5947f2bcd0454f6378b">example_run_command</a> (<a class="el" href="unionCommand.html">Command</a> cmd)</td></tr>
-<tr class="memdesc:a75b252ab1292f5947f2bcd0454f6378b"><td class="mdescLeft">&#160;</td><td class="mdescRight">An example of how to resolve a <a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> type from a <em><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a></em> union.  <a href="#a75b252ab1292f5947f2bcd0454f6378b">More...</a><br /></td></tr>
-<tr class="separator:a75b252ab1292f5947f2bcd0454f6378b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acffe0d67f5dfe68ccf3765cf8ae29dab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#acffe0d67f5dfe68ccf3765cf8ae29dab">create_process</a> (<a class="el" href="structCommandHolder.html">CommandHolder</a> holder)</td></tr>
-<tr class="memdesc:acffe0d67f5dfe68ccf3765cf8ae29dab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a process centered around the <em><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a></em> in the <em><a class="el" href="structCommandHolder.html" title="Contains information about the properties of the command. ">CommandHolder</a></em> setting up redirects and pipes where needed.  <a href="#acffe0d67f5dfe68ccf3765cf8ae29dab">More...</a><br /></td></tr>
-<tr class="separator:acffe0d67f5dfe68ccf3765cf8ae29dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa4a3cdc9e7dc1d4a91a621e26387e3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#aaa4a3cdc9e7dc1d4a91a621e26387e3d">parent_run_command</a> (<a class="el" href="unionCommand.html">Command</a> cmd)</td></tr>
+<tr class="memdesc:aaa4a3cdc9e7dc1d4a91a621e26387e3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">An example of how to resolve a <a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> type from a <em><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a></em> union.  <a href="#aaa4a3cdc9e7dc1d4a91a621e26387e3d">More...</a><br /></td></tr>
+<tr class="separator:aaa4a3cdc9e7dc1d4a91a621e26387e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade4b580b9bbc4e0a991d3b11499fb51c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade4b580b9bbc4e0a991d3b11499fb51c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>child_run_command</b> (<a class="el" href="unionCommand.html">Command</a> cmd)</td></tr>
+<tr class="separator:ade4b580b9bbc4e0a991d3b11499fb51c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1073ec8d469b5fd46bca4bce351f0cfd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1073ec8d469b5fd46bca4bce351f0cfd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>removeFromIDQueue</b> (<a class="el" href="structpidQueue.html">pidQueue</a> *q, int p)</td></tr>
+<tr class="separator:a1073ec8d469b5fd46bca4bce351f0cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add0f1866267412c168efd4f372301ce8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#add0f1866267412c168efd4f372301ce8">create_process</a> (<a class="el" href="structCommandHolder.html">CommandHolder</a> holder, int p_num, int plumber_pipes[2][2], struct <a class="el" href="structJob.html">Job</a> *j)</td></tr>
+<tr class="memdesc:add0f1866267412c168efd4f372301ce8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a process centered around the <em><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a></em> in the <em><a class="el" href="structCommandHolder.html" title="Contains information about the properties of the command. ">CommandHolder</a></em> setting up redirects and pipes where needed.  <a href="#add0f1866267412c168efd4f372301ce8">More...</a><br /></td></tr>
+<tr class="separator:add0f1866267412c168efd4f372301ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dab67459028f3b5a60d1a3695933f4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="execute_8c.html#a4dab67459028f3b5a60d1a3695933f4b">run_script</a> (<a class="el" href="structCommandHolder.html">CommandHolder</a> *holders)</td></tr>
 <tr class="memdesc:a4dab67459028f3b5a60d1a3695933f4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common entry point for all commands.  <a href="#a4dab67459028f3b5a60d1a3695933f4b">More...</a><br /></td></tr>
 <tr class="separator:a4dab67459028f3b5a60d1a3695933f4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aded1eb197f861f4cf05fa366a313b9c1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aded1eb197f861f4cf05fa366a313b9c1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>plumber_pipes</b> [2][2]</td></tr>
+<tr class="separator:aded1eb197f861f4cf05fa366a313b9c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53839ea9317f423ea49c4119a50065fb"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structState.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><b>globalState</b></td></tr>
+<tr class="separator:a53839ea9317f423ea49c4119a50065fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implements interface functions between Quash and the environment and functions that interpret an execute commands. </p>
 <dl class="section note"><dt>Note</dt><dd>As you add things to this file you may want to change the method signature </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="acffe0d67f5dfe68ccf3765cf8ae29dab"></a>
+<a class="anchor" id="add0f1866267412c168efd4f372301ce8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -174,8 +321,30 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
           <td class="memname">void create_process </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structCommandHolder.html">CommandHolder</a>&#160;</td>
-          <td class="paramname"><em>holder</em></td><td>)</td>
+          <td class="paramname"><em>holder</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>p_num</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>plumber_pipes</em>[2][2], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structJob.html">Job</a> *&#160;</td>
+          <td class="paramname"><em>j</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -189,32 +358,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> <a class="el" href="structCommandHolder.html" title="Contains information about the properties of the command. ">CommandHolder</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a75b252ab1292f5947f2bcd0454f6378b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void example_run_command </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="unionCommand.html">Command</a>&#160;</td>
-          <td class="paramname"><em>cmd</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>An example of how to resolve a <a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> type from a <em><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a></em> union. </p>
-<p>You will need some variant(s) of this switch structure to direct the command statements to their correct caller. Probably you won't want all commands accessible from a single function like this.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">cmd</td><td>The <a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> to try to run</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> </dd></dl>
 
 </div>
 </div>
@@ -269,6 +412,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
 
 </div>
 </div>
+<a class="anchor" id="aaa4a3cdc9e7dc1d4a91a621e26387e3d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void parent_run_command </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="unionCommand.html">Command</a>&#160;</td>
+          <td class="paramname"><em>cmd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>An example of how to resolve a <a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> type from a <em><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a></em> union. </p>
+<p>You will need some variant(s) of this switch structure to direct the command statements to their correct caller. Probably you won't want all commands accessible from a single function like this.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cmd</td><td>The <a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> to try to run</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="unionCommand.html" title="Make all command types the same size and interchangeable. ">Command</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a0b272e2a39868632c7cdf1f66abca817"></a>
 <div class="memitem">
 <div class="memproto">
@@ -300,10 +469,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
 </div><div class="memdoc">
 
 <p>Print a job to standard out. </p>
-<p>We use the minimum of what a Job structure should contain to pass to this function.</p>
+<p>We use the minimum of what a <a class="el" href="structJob.html">Job</a> structure should contain to pass to this function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">job_id</td><td>Job identifier number.</td></tr>
+    <tr><td class="paramname">job_id</td><td><a class="el" href="structJob.html">Job</a> identifier number.</td></tr>
     <tr><td class="paramname">pid</td><td>Process id of a process belonging to this job.</td></tr>
     <tr><td class="paramname">cmd</td><td>String holding an approximation of what the user typed in for the command. </td></tr>
   </table>
@@ -343,10 +512,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
 </div><div class="memdoc">
 
 <p>Print the completion of a background job to standard out. </p>
-<p>We use the minimum of what a Job should contain to pass to this function.</p>
+<p>We use the minimum of what a <a class="el" href="structJob.html">Job</a> should contain to pass to this function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">job_id</td><td>Job identifier number.</td></tr>
+    <tr><td class="paramname">job_id</td><td><a class="el" href="structJob.html">Job</a> identifier number.</td></tr>
     <tr><td class="paramname">pid</td><td>Process id of a process belonging to this job.</td></tr>
     <tr><td class="paramname">cmd</td><td>String holding an aproximation of what the user typed in for the command. </td></tr>
   </table>
@@ -386,10 +555,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
 </div><div class="memdoc">
 
 <p>Print the start up of a background job to standard out. </p>
-<p>We use the minimum of what a Job should contain to pass to this function.</p>
+<p>We use the minimum of what a <a class="el" href="structJob.html">Job</a> should contain to pass to this function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">job_id</td><td>Job identifier number.</td></tr>
+    <tr><td class="paramname">job_id</td><td><a class="el" href="structJob.html">Job</a> identifier number.</td></tr>
     <tr><td class="paramname">pid</td><td>Process id of a process belonging to this job.</td></tr>
     <tr><td class="paramname">cmd</td><td>String holding an aproximation of what the user typed in for the command. </td></tr>
   </table>
@@ -618,6 +787,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exec
   </dd>
 </dl>
 
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a class="anchor" id="a53839ea9317f423ea49c4119a50065fb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structState.html">State</a> globalState</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">={</div><div class="line">init : <span class="keyword">false</span>,</div><div class="line">}</div></div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->

@@ -6,16 +6,146 @@ Implements interface functions between Quash and the environment and functions t
 
 
 {\ttfamily \#include \char`\"{}execute.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$fcntl.\+h$>$}\\*
 {\ttfamily \#include $<$stdio.\+h$>$}\\*
+{\ttfamily \#include \char`\"{}deque.\+h\char`\"{}}\\*
 {\ttfamily \#include \char`\"{}quash.\+h\char`\"{}}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structpidQueue}{pid\+Queue}
+\item 
+struct \hyperlink{structJob}{Job}
+\item 
+struct \hyperlink{structJobQueue}{Job\+Queue}
+\item 
+struct \hyperlink{structState}{State}
+\end{DoxyCompactItemize}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
 \#define \hyperlink{execute_8c_aed9cdd9fcf6575f8a352f61c5e13cb5d}{I\+M\+P\+L\+E\+M\+E\+N\+T\+\_\+\+ME}()                                                                                                ~printf(\char`\"{}I\+M\+P\+L\+E\+M\+E\+NT M\+E\+: \%s(line \%d)\+: \%s()\textbackslash{}n\char`\"{}, \+\_\+\+\_\+\+F\+I\+L\+E\+\_\+\+\_\+, \+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+, \+\_\+\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+\_\+)\hypertarget{execute_8c_aed9cdd9fcf6575f8a352f61c5e13cb5d}{}\label{execute_8c_aed9cdd9fcf6575f8a352f61c5e13cb5d}
 
 \begin{DoxyCompactList}\small\item\em Note calls to any function that requires implementation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{structpidQueue}{pid\+Queue} {\bfseries pid\+Queue}\hypertarget{execute_8c_a0ebdb9d7365084264ba00def96886c42}{}\label{execute_8c_a0ebdb9d7365084264ba00def96886c42}
+
+\item 
+typedef struct \hyperlink{structJobQueue}{Job\+Queue} {\bfseries Job\+Queue}\hypertarget{execute_8c_aa9f12e415e9892e5e50e11f1383c794d}{}\label{execute_8c_aa9f12e415e9892e5e50e11f1383c794d}
+
+\end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
+\item 
+void {\bfseries apply\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$, void($\ast$)(int))\hypertarget{execute_8c_aa1ae151ecb1fd6bad2999e9550f2aab7}{}\label{execute_8c_aa1ae151ecb1fd6bad2999e9550f2aab7}
+
+\item 
+\hyperlink{structpidQueue}{pid\+Queue} {\bfseries new\+\_\+pid\+Queue} (size\+\_\+t init\+\_\+cap)\hypertarget{execute_8c_a8331bedb3c3c29ad9128d5e19865b55e}{}\label{execute_8c_a8331bedb3c3c29ad9128d5e19865b55e}
+
+\item 
+\hyperlink{structpidQueue}{pid\+Queue} {\bfseries new\+\_\+destructable\+\_\+pid\+Queue} (size\+\_\+t init\+\_\+cap, void($\ast$destructor)(int))\hypertarget{execute_8c_af5686ad302303c58a8f3b166c2b3856e}{}\label{execute_8c_af5686ad302303c58a8f3b166c2b3856e}
+
+\item 
+void {\bfseries destroy\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_a63e6e1f42e49c9985c655c06b7001a0e}{}\label{execute_8c_a63e6e1f42e49c9985c655c06b7001a0e}
+
+\item 
+void {\bfseries empty\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_a75e0e4b08e05ea0b80350de6f9012160}{}\label{execute_8c_a75e0e4b08e05ea0b80350de6f9012160}
+
+\item 
+bool {\bfseries is\+\_\+empty\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_a2188b9c7da993b81126b3473a3c34cf0}{}\label{execute_8c_a2188b9c7da993b81126b3473a3c34cf0}
+
+\item 
+size\+\_\+t {\bfseries length\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_ad94d0390f3632baa3d8ee85b6d608b96}{}\label{execute_8c_ad94d0390f3632baa3d8ee85b6d608b96}
+
+\item 
+int $\ast$ {\bfseries as\+\_\+array\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, size\+\_\+t $\ast$len)\hypertarget{execute_8c_a302e054c90a47de545195543504ecef1}{}\label{execute_8c_a302e054c90a47de545195543504ecef1}
+
+\item 
+void {\bfseries push\+\_\+front\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, int element)\hypertarget{execute_8c_aabb73a15035f6e01fdb1eed8c9298f1e}{}\label{execute_8c_aabb73a15035f6e01fdb1eed8c9298f1e}
+
+\item 
+void {\bfseries push\+\_\+back\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, int element)\hypertarget{execute_8c_a768c820bf98b3b9c04726a5660255b5c}{}\label{execute_8c_a768c820bf98b3b9c04726a5660255b5c}
+
+\item 
+int {\bfseries pop\+\_\+front\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_a66938d15cd930476f90d9ef9ac67c3e0}{}\label{execute_8c_a66938d15cd930476f90d9ef9ac67c3e0}
+
+\item 
+int {\bfseries pop\+\_\+back\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_ade39ef3213c630a3247353adbad88dda}{}\label{execute_8c_ade39ef3213c630a3247353adbad88dda}
+
+\item 
+int {\bfseries peek\+\_\+front\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_ac8b434f1686c492af5453ae2d635cd30}{}\label{execute_8c_ac8b434f1686c492af5453ae2d635cd30}
+
+\item 
+int {\bfseries peek\+\_\+back\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq)\hypertarget{execute_8c_a161e9eb37b49fbae142afae17dbb0622}{}\label{execute_8c_a161e9eb37b49fbae142afae17dbb0622}
+
+\item 
+void {\bfseries update\+\_\+front\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, int element)\hypertarget{execute_8c_a5ad8abff0bd7c1d424dae89e7729720b}{}\label{execute_8c_a5ad8abff0bd7c1d424dae89e7729720b}
+
+\item 
+void {\bfseries update\+\_\+back\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, int element)\hypertarget{execute_8c_ab2854e2a3e07674c565d074d03e0dc6c}{}\label{execute_8c_ab2854e2a3e07674c565d074d03e0dc6c}
+
+\item 
+void {\bfseries update\+\_\+and\+\_\+destroy\+\_\+front\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, int element)\hypertarget{execute_8c_a419c47b7f2900ea44e8e5a2400214838}{}\label{execute_8c_a419c47b7f2900ea44e8e5a2400214838}
+
+\item 
+void {\bfseries update\+\_\+and\+\_\+destroy\+\_\+back\+\_\+pid\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$deq, int element)\hypertarget{execute_8c_a5855da69fb75016c437c226f66d04e11}{}\label{execute_8c_a5855da69fb75016c437c226f66d04e11}
+
+\item 
+void {\bfseries apply\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$, void($\ast$)(struct \hyperlink{structJob}{Job}))\hypertarget{execute_8c_ac1d2e083ed599c073ca4d8ddd71c8441}{}\label{execute_8c_ac1d2e083ed599c073ca4d8ddd71c8441}
+
+\item 
+\hyperlink{structJobQueue}{Job\+Queue} {\bfseries new\+\_\+\+Job\+Queue} (size\+\_\+t init\+\_\+cap)\hypertarget{execute_8c_acb697f07fe3bd4319568ed536dc60702}{}\label{execute_8c_acb697f07fe3bd4319568ed536dc60702}
+
+\item 
+\hyperlink{structJobQueue}{Job\+Queue} {\bfseries new\+\_\+destructable\+\_\+\+Job\+Queue} (size\+\_\+t init\+\_\+cap, void($\ast$destructor)(struct \hyperlink{structJob}{Job}))\hypertarget{execute_8c_ada112a88e9db567c434a0d6283864da4}{}\label{execute_8c_ada112a88e9db567c434a0d6283864da4}
+
+\item 
+void {\bfseries destroy\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_a97db4b16f0c07536785cd8724eb57c77}{}\label{execute_8c_a97db4b16f0c07536785cd8724eb57c77}
+
+\item 
+void {\bfseries empty\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_ae04ebc69eff6081310bd0949fa072317}{}\label{execute_8c_ae04ebc69eff6081310bd0949fa072317}
+
+\item 
+bool {\bfseries is\+\_\+empty\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_a4c1804ee14f45c421e313ff3cfd48f54}{}\label{execute_8c_a4c1804ee14f45c421e313ff3cfd48f54}
+
+\item 
+size\+\_\+t {\bfseries length\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_add664b32dc482ccddc6d2ed14e2786d1}{}\label{execute_8c_add664b32dc482ccddc6d2ed14e2786d1}
+
+\item 
+struct \hyperlink{structJob}{Job} $\ast$ {\bfseries as\+\_\+array\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, size\+\_\+t $\ast$len)\hypertarget{execute_8c_a0b390cb2dbcbf9feed27aaf0d6f6934b}{}\label{execute_8c_a0b390cb2dbcbf9feed27aaf0d6f6934b}
+
+\item 
+void {\bfseries push\+\_\+front\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, struct \hyperlink{structJob}{Job} element)\hypertarget{execute_8c_a9f157e54aa62d710c2a4fd561b9598cc}{}\label{execute_8c_a9f157e54aa62d710c2a4fd561b9598cc}
+
+\item 
+void {\bfseries push\+\_\+back\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, struct \hyperlink{structJob}{Job} element)\hypertarget{execute_8c_a3040467cc1aa085324081841746e170e}{}\label{execute_8c_a3040467cc1aa085324081841746e170e}
+
+\item 
+struct \hyperlink{structJob}{Job} {\bfseries pop\+\_\+front\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_a8da70b603302ab3564116190759df5f0}{}\label{execute_8c_a8da70b603302ab3564116190759df5f0}
+
+\item 
+struct \hyperlink{structJob}{Job} {\bfseries pop\+\_\+back\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_acc34ce9f51987bbccb1711fc91206d1e}{}\label{execute_8c_acc34ce9f51987bbccb1711fc91206d1e}
+
+\item 
+struct \hyperlink{structJob}{Job} {\bfseries peek\+\_\+front\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_a87fe45cbf66dcb0ca25c325479035d7f}{}\label{execute_8c_a87fe45cbf66dcb0ca25c325479035d7f}
+
+\item 
+struct \hyperlink{structJob}{Job} {\bfseries peek\+\_\+back\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq)\hypertarget{execute_8c_ad698efe1ef525a9e9eb7cff030437e8e}{}\label{execute_8c_ad698efe1ef525a9e9eb7cff030437e8e}
+
+\item 
+void {\bfseries update\+\_\+front\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, struct \hyperlink{structJob}{Job} element)\hypertarget{execute_8c_aeedce1f99d44d574e4ac7867d70f5493}{}\label{execute_8c_aeedce1f99d44d574e4ac7867d70f5493}
+
+\item 
+void {\bfseries update\+\_\+back\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, struct \hyperlink{structJob}{Job} element)\hypertarget{execute_8c_a2e36564c097c77c4ac4856e7191bf94e}{}\label{execute_8c_a2e36564c097c77c4ac4856e7191bf94e}
+
+\item 
+void {\bfseries update\+\_\+and\+\_\+destroy\+\_\+front\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, struct \hyperlink{structJob}{Job} element)\hypertarget{execute_8c_a540d0571ba0e895cec68b4a35a95a77c}{}\label{execute_8c_a540d0571ba0e895cec68b4a35a95a77c}
+
+\item 
+void {\bfseries update\+\_\+and\+\_\+destroy\+\_\+back\+\_\+\+Job\+Queue} (\hyperlink{structJobQueue}{Job\+Queue} $\ast$deq, struct \hyperlink{structJob}{Job} element)\hypertarget{execute_8c_a4b5f3d097ba66dd92ed10666b5e8b861}{}\label{execute_8c_a4b5f3d097ba66dd92ed10666b5e8b861}
+
 \item 
 char $\ast$ \hyperlink{execute_8c_acd83b7572960ddecb86a6f96d82fa040}{get\+\_\+current\+\_\+directory} (bool $\ast$should\+\_\+free)
 \begin{DoxyCompactList}\small\item\em Get the real current working directory. \end{DoxyCompactList}\item 
@@ -46,12 +176,26 @@ void \hyperlink{execute_8c_a934397f142ab2b63f69628a9db231bac}{run\+\_\+pwd} ()
 \begin{DoxyCompactList}\small\item\em Run the builtin pwd (print working directory) command. \end{DoxyCompactList}\item 
 void \hyperlink{execute_8c_ae954ca554a8f66899f270560d68ec012}{run\+\_\+jobs} ()
 \begin{DoxyCompactList}\small\item\em Run the builtin jobs command to show the jobs list. \end{DoxyCompactList}\item 
-void \hyperlink{execute_8c_a75b252ab1292f5947f2bcd0454f6378b}{example\+\_\+run\+\_\+command} (\hyperlink{unionCommand}{Command} cmd)
+void \hyperlink{execute_8c_aaa4a3cdc9e7dc1d4a91a621e26387e3d}{parent\+\_\+run\+\_\+command} (\hyperlink{unionCommand}{Command} cmd)
 \begin{DoxyCompactList}\small\item\em An example of how to resolve a \hyperlink{unionCommand}{Command} type from a {\itshape \hyperlink{unionCommand}{Command}} union. \end{DoxyCompactList}\item 
-void \hyperlink{execute_8c_acffe0d67f5dfe68ccf3765cf8ae29dab}{create\+\_\+process} (\hyperlink{structCommandHolder}{Command\+Holder} holder)
+void {\bfseries child\+\_\+run\+\_\+command} (\hyperlink{unionCommand}{Command} cmd)\hypertarget{execute_8c_ade4b580b9bbc4e0a991d3b11499fb51c}{}\label{execute_8c_ade4b580b9bbc4e0a991d3b11499fb51c}
+
+\item 
+void {\bfseries remove\+From\+I\+D\+Queue} (\hyperlink{structpidQueue}{pid\+Queue} $\ast$q, int p)\hypertarget{execute_8c_a1073ec8d469b5fd46bca4bce351f0cfd}{}\label{execute_8c_a1073ec8d469b5fd46bca4bce351f0cfd}
+
+\item 
+void \hyperlink{execute_8c_add0f1866267412c168efd4f372301ce8}{create\+\_\+process} (\hyperlink{structCommandHolder}{Command\+Holder} holder, int p\+\_\+num, int plumber\+\_\+pipes\mbox{[}2\mbox{]}\mbox{[}2\mbox{]}, struct \hyperlink{structJob}{Job} $\ast$j)
 \begin{DoxyCompactList}\small\item\em Create a process centered around the {\itshape \hyperlink{unionCommand}{Command}} in the {\itshape \hyperlink{structCommandHolder}{Command\+Holder}} setting up redirects and pipes where needed. \end{DoxyCompactList}\item 
 void \hyperlink{execute_8c_a4dab67459028f3b5a60d1a3695933f4b}{run\+\_\+script} (\hyperlink{structCommandHolder}{Command\+Holder} $\ast$holders)
 \begin{DoxyCompactList}\small\item\em Common entry point for all commands. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries plumber\+\_\+pipes} \mbox{[}2\mbox{]}\mbox{[}2\mbox{]}\hypertarget{execute_8c_aded1eb197f861f4cf05fa366a313b9c1}{}\label{execute_8c_aded1eb197f861f4cf05fa366a313b9c1}
+
+\item 
+struct \hyperlink{structState}{State} {\bfseries global\+State}
+\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
@@ -65,11 +209,14 @@ As you add things to this file you may want to change the method signature
 \subsection{Function Documentation}
 \index{execute.\+c@{execute.\+c}!create\+\_\+process@{create\+\_\+process}}
 \index{create\+\_\+process@{create\+\_\+process}!execute.\+c@{execute.\+c}}
-\subsubsection[{\texorpdfstring{create\+\_\+process(\+Command\+Holder holder)}{create\_process(CommandHolder holder)}}]{\setlength{\rightskip}{0pt plus 5cm}void create\+\_\+process (
+\subsubsection[{\texorpdfstring{create\+\_\+process(\+Command\+Holder holder, int p\+\_\+num, int plumber\+\_\+pipes[2][2], struct Job $\ast$j)}{create\_process(CommandHolder holder, int p\_num, int plumber\_pipes[2][2], struct Job *j)}}]{\setlength{\rightskip}{0pt plus 5cm}void create\+\_\+process (
 \begin{DoxyParamCaption}
-\item[{{\bf Command\+Holder}}]{holder}
+\item[{{\bf Command\+Holder}}]{holder, }
+\item[{int}]{p\+\_\+num, }
+\item[{int}]{plumber\+\_\+pipes\mbox{[}2\mbox{]}\mbox{[}2\mbox{]}, }
+\item[{struct {\bf Job} $\ast$}]{j}
 \end{DoxyParamCaption}
-)}\hypertarget{execute_8c_acffe0d67f5dfe68ccf3765cf8ae29dab}{}\label{execute_8c_acffe0d67f5dfe68ccf3765cf8ae29dab}
+)}\hypertarget{execute_8c_add0f1866267412c168efd4f372301ce8}{}\label{execute_8c_add0f1866267412c168efd4f372301ce8}
 
 
 Create a process centered around the {\itshape \hyperlink{unionCommand}{Command}} in the {\itshape \hyperlink{structCommandHolder}{Command\+Holder}} setting up redirects and pipes where needed. 
@@ -84,27 +231,6 @@ Not all commands should be run in the child process. A few need to change the qu
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
 \hyperlink{unionCommand}{Command} \hyperlink{structCommandHolder}{Command\+Holder} 
-\end{DoxySeeAlso}
-\index{execute.\+c@{execute.\+c}!example\+\_\+run\+\_\+command@{example\+\_\+run\+\_\+command}}
-\index{example\+\_\+run\+\_\+command@{example\+\_\+run\+\_\+command}!execute.\+c@{execute.\+c}}
-\subsubsection[{\texorpdfstring{example\+\_\+run\+\_\+command(\+Command cmd)}{example\_run\_command(Command cmd)}}]{\setlength{\rightskip}{0pt plus 5cm}void example\+\_\+run\+\_\+command (
-\begin{DoxyParamCaption}
-\item[{{\bf Command}}]{cmd}
-\end{DoxyParamCaption}
-)}\hypertarget{execute_8c_a75b252ab1292f5947f2bcd0454f6378b}{}\label{execute_8c_a75b252ab1292f5947f2bcd0454f6378b}
-
-
-An example of how to resolve a \hyperlink{unionCommand}{Command} type from a {\itshape \hyperlink{unionCommand}{Command}} union. 
-
-You will need some variant(s) of this switch structure to direct the command statements to their correct caller. Probably you won\textquotesingle{}t want all commands accessible from a single function like this.
-
-
-\begin{DoxyParams}{Parameters}
-{\em cmd} & The \hyperlink{unionCommand}{Command} to try to run\\
-\hline
-\end{DoxyParams}
-\begin{DoxySeeAlso}{See also}
-\hyperlink{unionCommand}{Command} 
 \end{DoxySeeAlso}
 \index{execute.\+c@{execute.\+c}!get\+\_\+current\+\_\+directory@{get\+\_\+current\+\_\+directory}}
 \index{get\+\_\+current\+\_\+directory@{get\+\_\+current\+\_\+directory}!execute.\+c@{execute.\+c}}
@@ -146,6 +272,27 @@ Function to get environment variable values.
 \begin{DoxyReturn}{Returns}
 String containing the value of the environment variable env\+\_\+var 
 \end{DoxyReturn}
+\index{execute.\+c@{execute.\+c}!parent\+\_\+run\+\_\+command@{parent\+\_\+run\+\_\+command}}
+\index{parent\+\_\+run\+\_\+command@{parent\+\_\+run\+\_\+command}!execute.\+c@{execute.\+c}}
+\subsubsection[{\texorpdfstring{parent\+\_\+run\+\_\+command(\+Command cmd)}{parent\_run\_command(Command cmd)}}]{\setlength{\rightskip}{0pt plus 5cm}void parent\+\_\+run\+\_\+command (
+\begin{DoxyParamCaption}
+\item[{{\bf Command}}]{cmd}
+\end{DoxyParamCaption}
+)}\hypertarget{execute_8c_aaa4a3cdc9e7dc1d4a91a621e26387e3d}{}\label{execute_8c_aaa4a3cdc9e7dc1d4a91a621e26387e3d}
+
+
+An example of how to resolve a \hyperlink{unionCommand}{Command} type from a {\itshape \hyperlink{unionCommand}{Command}} union. 
+
+You will need some variant(s) of this switch structure to direct the command statements to their correct caller. Probably you won\textquotesingle{}t want all commands accessible from a single function like this.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cmd} & The \hyperlink{unionCommand}{Command} to try to run\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\hyperlink{unionCommand}{Command} 
+\end{DoxySeeAlso}
 \index{execute.\+c@{execute.\+c}!print\+\_\+job@{print\+\_\+job}}
 \index{print\+\_\+job@{print\+\_\+job}!execute.\+c@{execute.\+c}}
 \subsubsection[{\texorpdfstring{print\+\_\+job(int job\+\_\+id, pid\+\_\+t pid, const char $\ast$cmd)}{print\_job(int job\_id, pid\_t pid, const char *cmd)}}]{\setlength{\rightskip}{0pt plus 5cm}void print\+\_\+job (
@@ -159,11 +306,11 @@ String containing the value of the environment variable env\+\_\+var
 
 Print a job to standard out. 
 
-We use the minimum of what a Job structure should contain to pass to this function.
+We use the minimum of what a \hyperlink{structJob}{Job} structure should contain to pass to this function.
 
 
 \begin{DoxyParams}{Parameters}
-{\em job\+\_\+id} & Job identifier number.\\
+{\em job\+\_\+id} & \hyperlink{structJob}{Job} identifier number.\\
 \hline
 {\em pid} & Process id of a process belonging to this job.\\
 \hline
@@ -183,11 +330,11 @@ We use the minimum of what a Job structure should contain to pass to this functi
 
 Print the completion of a background job to standard out. 
 
-We use the minimum of what a Job should contain to pass to this function.
+We use the minimum of what a \hyperlink{structJob}{Job} should contain to pass to this function.
 
 
 \begin{DoxyParams}{Parameters}
-{\em job\+\_\+id} & Job identifier number.\\
+{\em job\+\_\+id} & \hyperlink{structJob}{Job} identifier number.\\
 \hline
 {\em pid} & Process id of a process belonging to this job.\\
 \hline
@@ -207,11 +354,11 @@ We use the minimum of what a Job should contain to pass to this function.
 
 Print the start up of a background job to standard out. 
 
-We use the minimum of what a Job should contain to pass to this function.
+We use the minimum of what a \hyperlink{structJob}{Job} should contain to pass to this function.
 
 
 \begin{DoxyParams}{Parameters}
-{\em job\+\_\+id} & Job identifier number.\\
+{\em job\+\_\+id} & \hyperlink{structJob}{Job} identifier number.\\
 \hline
 {\em pid} & Process id of a process belonging to this job.\\
 \hline
@@ -381,3 +528,15 @@ Function to set and define environment variable values.
 {\em val} & String with the value to set the environment variable env\+\_\+var \\
 \hline
 \end{DoxyParams}
+
+
+\subsection{Variable Documentation}
+\index{execute.\+c@{execute.\+c}!global\+State@{global\+State}}
+\index{global\+State@{global\+State}!execute.\+c@{execute.\+c}}
+\subsubsection[{\texorpdfstring{global\+State}{globalState}}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf State} global\+State}\hypertarget{execute_8c_a53839ea9317f423ea49c4119a50065fb}{}\label{execute_8c_a53839ea9317f423ea49c4119a50065fb}
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+=\{
+init : \textcolor{keyword}{false},
+\}
+\end{DoxyCode}
